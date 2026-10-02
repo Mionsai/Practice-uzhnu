@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Підписка на щотижневий бокс — Чиста полиця</title>
+    <link rel="icon" href="images/favicon.jpg">
+</head>
+
+<body>
+    <header>
+        <h1 id="top">Чиста полиця</h1>
+        <nav aria-label="Головне меню">
+            <ul>
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="index.html#store">Про проєкт</a></li>
+                <li><a href="index.html#alergic">Алергени</a></li>
+                <li><a href="form.html">Підписка</a></li>
+                <li><a href="about.html">Контакти</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Оформлення підписки на щотижневий бокс</h1>
+        <p>
+            Заповніть форму, щоб оформити підписку на щотижневий бокс корисних
+            продуктів. Після відправлення менеджер підбере склад боксу з урахуванням
+            ваших алергенів і побажань, а на вказану пошту надійде лист із
+            підтвердженням підписки та датою першої доставки.
+        </p>
+
+        <form action="/submit" method="post">
+            <!-- method="post": форма створює нову підписку, тому повторне надсилання
+                 по F5 не має відбуватися випадково, а персональні дані не повинні лишатися в URL -->
+
+            <fieldset>
+                <legend>Дані користувача</legend>
+
+                <p>
+                    <label for="fullname">Прізвище та ім'я:</label>
+                    <input type="text" id="fullname" name="fullname"
+                        placeholder="Шевченко Олена" autocomplete="name"
+                        minlength="2" maxlength="60" required>
+                </p>
+
+                <p>
+                    <label for="email">Електронна пошта:</label>
+                    <input type="email" id="email" name="email"
+                        placeholder="olena@example.com" autocomplete="email" required>
+                </p>
+
+                <!-- pattern="\+380[0-9]{9}"
+                     \+     — буквальний знак «плюс» (екранований, бо + у регулярці означає «один або більше»)
+                     380    — рівно символи 3, 8, 0 — код України
+                     [0-9]  — одна будь-яка цифра від 0 до 9
+                     {9}    — рівно дев'ять разів
+                     Разом: +380671234567 -->
+                <p>
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone"
+                        placeholder="+380671234567" autocomplete="tel"
+                        pattern="\+380[0-9]{9}"
+                        title="Номер у форматі +380XXXXXXXXX: знак +, код 380 і ще 9 цифр без пробілів, наприклад +380671234567"
+                        required>
+                </p>
+
+                <p>
+                    <label for="delivery-date">Дата першої доставки:</label>
+                    <input type="date" id="delivery-date" name="delivery_date"
+                        min="2026-09-01" max="2027-06-30" required>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Параметри боксу</legend>
+
+                <p>
+                    <label for="box-type">Тип боксу:</label>
+                    <select id="box-type" name="box_type" required>
+                        <option value="">— оберіть —</option>
+                        <option value="basic">Базовий</option>
+                        <option value="vegan">Веганський</option>
+                        <option value="sport">Спортивний (більше білка)</option>
+                        <option value="gluten-free">Без глютену</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="persons">Кількість осіб у родині:</label>
+                    <input type="number" id="persons" name="persons"
+                        min="1" max="5" step="1" value="1" required>
+                </p>
+
+                <fieldset>
+                    <legend>Розмір боксу</legend>
+                    <input type="radio" id="size-s" name="box_size" value="s">
+                    <label for="size-s">S — 5 продуктів</label>
+                    <input type="radio" id="size-m" name="box_size" value="m" checked>
+                    <label for="size-m">M — 8 продуктів</label>
+                    <input type="radio" id="size-l" name="box_size" value="l">
+                    <label for="size-l">L — 12 продуктів</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Виключити алергени</legend>
+                    <input type="checkbox" id="no-nuts" name="exclude_allergens" value="nuts">
+                    <label for="no-nuts">Горіхи</label>
+                    <input type="checkbox" id="no-gluten" name="exclude_allergens" value="gluten">
+                    <label for="no-gluten">Глютен</label>
+                    <input type="checkbox" id="no-lactose" name="exclude_allergens" value="lactose">
+                    <label for="no-lactose">Лактоза</label>
+                </fieldset>
+
+                <!-- pattern="HF-[0-9]{4}-UA"
+                     HF     — буквально великі латинські літери H і F (Healthy Food)
+                     -      — буквальний дефіс
+                     [0-9]  — одна будь-яка цифра від 0 до 9
+                     {4}    — рівно чотири рази
+                     -      — буквальний дефіс
+                     UA     — буквально великі латинські літери U і A
+                     Разом: HF-0782-UA -->
+                <p>
+                    <label for="product-code">Код улюбленого продукту:</label>
+                    <input type="text" id="product-code" name="product_code"
+                        placeholder="HF-0782-UA"
+                        pattern="HF-[0-9]{4}-UA"
+                        title="Код продукту у форматі HF-0000-UA: літери HF, дефіс, чотири цифри, дефіс, літери UA, наприклад HF-0782-UA">
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Додатково</legend>
+
+                <p>
+                    <label for="comment">Побажання до складу боксу:</label><br>
+                    <textarea id="comment" name="comment" rows="4" cols="50"
+                        minlength="10" maxlength="500"
+                        placeholder="Наприклад: менше солодкого, більше круп і бобових"></textarea>
+                </p>
+
+                <p>
+                    <input type="checkbox" id="agree" name="agree" value="yes" required>
+                    <label for="agree">Я погоджуюся з умовами підписки та обробкою персональних даних</label>
+                </p>
+            </fieldset>
+
+            <p>
+                <button type="submit">Оформити підписку</button>
+                <button type="reset">Очистити форму</button>
+            </p>
+        </form>
+    </main>
+
+    <footer>
+        <p>Полажинець Михайло, 2026</p>
+        <address>
+            м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
+        </address>
+    </footer>
+</body>
+
+</html>
