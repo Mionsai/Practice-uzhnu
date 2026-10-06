@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito+Sans:wght@400;700&subset=cyrillic&display=swap');
+
+:root {
+  /* палітра з фото-референсу (дрова): кремовий → карамель → теракота,
+     графіт → майже чорний синій — один відтінок, різна світлість */
+  --color-brand: hsl(15 66% 42%);    /* теракота, фірмовий */
+  --color-accent: hsl(29 70% 50%);   /* карамель, акцент */
+  --color-bg: hsl(37 45% 95%);
+  --color-surface: hsl(37 42% 85%);
+  --color-text: hsl(218 42% 9%);
+  --color-muted: hsl(221 14% 35%);
+  --color-hover: hsl(15 45% 90%);    /* підсвітка рядка таблиці */
+
+  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+  --radius: 0.5rem;
+  --space: 1rem;
+  --space-sm: 0.5rem;
+  --measure: 65ch;
+  --shadow: 0 2px 8px rgb(0 0 0 / 12%);
+}
+
+/* Типографіка */
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--color-brand);
+}
+
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.4rem; }
+
+p {
+  max-width: var(--measure);
+}
+
+strong, b {
+  font-weight: 700;
+}
+
+header, main, footer {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding-inline: var(--space);
+  box-sizing: border-box;
+}
+
+main {
+  padding-block: var(--space);
+}
+
+/* Шапка та меню */
+header {
+  background: var(--color-surface);
+  padding-block: var(--space);
+}
+
+nav[aria-label="Головне меню"] ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  background: var(--color-brand);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+nav[aria-label="Головне меню"] li {
+  display: inline-block;
+}
+
+nav[aria-label="Головне меню"] a {
+  display: inline-block;
+  padding: var(--space-sm) var(--space);
+  color: var(--color-bg);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+nav[aria-label="Головне меню"] a:hover {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* клас current переїжджає на пункт активної сторінки в кожному html-файлі */
+nav[aria-label="Головне меню"] a.current {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+nav[aria-label="Навігація по сторінці"] ul {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space);
+}
+
+footer {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  padding-block: var(--space);
+  margin-top: var(--space);
+}
+
+
+
+/* Таблиця каталогу
+об'єданно код з пластівців та горохів виглядає не дуже, не можу згадати що треба використати аби воно виглядало нормально
+*/
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-block: var(--space);
+  box-shadow: var(--shadow, 0 2px 8px rgb(0 0 0 / 10%));
+  
+}
+
+caption {
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+
+th, td {
+  border: 1px solid var(--color-muted);
+  padding: var(--space-sm);
+}
+
+thead th {
+  background: var(--color-brand);
+  color: var(--color-bg);
+  text-align: left;
+}
+
+/* Ціна (rowspan, останній th першого рядка) і другий рядок thead (Білки/Жири/Вуглеводи) — праворуч */
+thead tr:last-child th,
+thead tr:first-child th:last-child {
+  text-align: right;
+}
+
+tbody th {
+  text-align: left;
+}
+
+/* rowspan Категорії/Виробника зʼїдає клітинки з початку рядка, не з кінця —
+   тому останні 4 td завжди Білки/Жири/Вуглеводи/Ціна, в будь-якому рядку */
+tbody td:nth-last-child(-n + 4) {
+  text-align: right;
+}
+
+/* even = 2n, фарбуємо парні рядки (2, 4, 6…) */
+tbody tr:nth-child(even) {
+  background: var(--color-surface);
+}
+
+tbody tr:hover {
+  background: var(--color-hover);
+}
+
+tfoot th,
+tfoot td {
+  font-weight: 700;
+}
+
+tfoot th { text-align: left; }
+tfoot td { text-align: right; }
+
+/* Форма підписки */
+fieldset {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  margin-bottom: var(--space);
+  padding: var(--space);
+}
+
+legend {
+  font-family: var(--font-heading);
+  color: var(--color-brand);
+  padding-inline: var(--space-sm);
+}
+
+label {
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  max-width: 24rem;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* просто :invalid спрацював би одразу на пустій required-формі ще до вводу -
+   тому :focus:invalid, підсвітка лише в полі, яке зараз редагують */
+input:focus:invalid,
+select:focus:invalid,
+textarea:focus:invalid {
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+input:focus:valid,
+select:focus:valid,
+textarea:focus:valid {
+  border-color: var(--color-brand);
+  background: var(--color-surface);
+}
+
+/* :has(> input:required) - обгортка-<p> з обов'язковим полем,
+   не важливо, label стоїть до input чи після (чекбокс agree) */
+p:has(> input:required) label::after,
+p:has(> select:required) label::after {
+  content: " *";
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+button[type="submit"],
+button[type="reset"] {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-sm) var(--space);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+button[type="reset"] {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border: 1px solid var(--color-muted);
+}
+
+/* Інші обов'язкові селектори */
+
+/* :first-child — перша порада виділена лінією зверху */
+aside li:first-child {
+  border-top: 2px solid var(--color-accent);
+  padding-top: var(--space-sm);
+}
+
+/* :last-child — останній блок питань без зайвого відступу знизу */
+details:last-child {
+  margin-bottom: 0;
+}
+
+/* :checked — підпис вибраного розміру боксу жирним і фірмовим кольором */
+input[type="radio"]:checked + label {
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+/* ::marker — колір і розмір маркерів списку порад */
+aside li::marker {
+  color: var(--color-accent);
+  font-size: 1.2em;
+}
+
+/* ::first-letter — буквиця в першому абзаці вступу */
+#store > p:first-of-type::first-letter {
+  font-family: var(--font-heading);
+  font-size: 2em;
+  color: var(--color-brand);
+}
+
+/* нащадок (пробіл) — усі <a> всередині <main>, на будь-якій глибині */
+main a {
+  color: var(--color-brand);
+}
+
+
+main > p {
+  margin-inline: 0;
+}
+
+/* атрибутний селектор: зовнішні посилання позначені стрілкою */
+a[href^="http"]::after {
+  content: " ↗";
+}
+
+a[href$=".pdf"]::after {
+  content: " (PDF)";
+}
+
+/* LVHFA: однакова специфічність у всіх чотирьох, тому порядок у файлі
+   вирішує, хто переможе — пізніше правило перебиває раніше */
+a:link { color: var(--color-brand); }
+a:visited { color: var(--color-muted); }
+a:hover { color: var(--color-accent); }
+a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+a:active { color: var(--color-text); }
+
+/* Специфічність: заголовок картки товару (h3 у #promo)
+   h3        — (0,0,1)
+   .card h3  — (0,1,1)
+   #promo h3 — (1,0,1)  перемагає — id не наздогнати жодною кількістю класів */
+/* h3       { color: var(--color-text); } */
+/* .card h3 { color: var(--color-muted); } */
+#promo h3 { color: var(--color-brand); }
+
+/* inline-стиль переміг би все вище — специфічність інлайну вища за id,
+   але тоді колір довелося б міняти прямо в розмітці, а не в одному файлі */
+/* <h3 style="color: purple;">Вівсяні пластівці</h3> */
+
+/* Темна тема */
+body.dark-theme {
+  --color-bg: hsl(218 35% 10%);
+  --color-surface: hsl(218 30% 16%);
+  --color-text: hsl(37 35% 92%);
+  --color-muted: hsl(221 14% 65%);
+  --color-hover: hsl(15 40% 22%);
+}
