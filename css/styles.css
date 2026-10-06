@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito+Sans:wght@400;700&subset=cyrillic&display=swap');
 
 :root {
-  /* палітра з фото-референсу (дрова): кремовий → карамель → теракота,
-     графіт → майже чорний синій — один відтінок, різна світлість */
-  --color-brand: hsl(15 66% 42%);    /* теракота, фірмовий */
-  --color-accent: hsl(29 70% 50%);   /* карамель, акцент */
-  --color-bg: hsl(37 45% 95%);
-  --color-surface: hsl(37 42% 85%);
-  --color-text: hsl(218 42% 9%);
-  --color-muted: hsl(221 14% 35%);
-  --color-hover: hsl(15 45% 90%);    /* підсвітка рядка таблиці */
+  /* еко-палітра: трав'яний зелений, світлий фон, коричневий крафт-колір
+     для паковання, окремий червоний для попередження про алергени */
+  --color-brand: hsl(100 40% 28%);   /* трав'яний зелений, темніший */
+  --color-accent: hsl(100 45% 40%);  /* трав'яний зелений, акцент */
+  --color-bg: hsl(90 30% 97%);
+  --color-surface: hsl(95 25% 92%);
+  --color-text: hsl(100 15% 13%);
+  --color-muted: hsl(100 8% 40%);
+  --color-hover: hsl(100 30% 90%);   /* підсвітка рядка таблиці */
+  --color-craft: hsl(28 35% 40%);    /* коричневий, крафт-паковання */
+  --color-allergen: hsl(0 70% 45%);  /* червоний, попередження про алергени */
 
   --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
@@ -61,6 +63,25 @@ header, main, footer {
 
 main {
   padding-block: var(--space);
+}
+
+/* Мітки: еко-паковання (крафт-коричневий) і попередження про алергени (червоний) */
+.badge-eco,
+.badge-allergen {
+  display: inline-block;
+  padding: 0.1em 0.6em;
+  border-radius: var(--radius);
+  color: var(--color-bg);
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.badge-eco {
+  background: var(--color-craft);
+}
+
+.badge-allergen {
+  background: var(--color-allergen);
 }
 
 /* Шапка та меню */
@@ -148,9 +169,8 @@ thead th {
   text-align: left;
 }
 
-/* Ціна (rowspan, останній th першого рядка) і другий рядок thead (Білки/Жири/Вуглеводи) — праворуч */
-thead tr:last-child th,
-thead tr:first-child th:last-child {
+/* Калорійність і вага — останні 2 колонки заголовка, праворуч */
+thead th:nth-last-child(-n + 2) {
   text-align: right;
 }
 
@@ -158,9 +178,9 @@ tbody th {
   text-align: left;
 }
 
-/* rowspan Категорії/Виробника зʼїдає клітинки з початку рядка, не з кінця —
-   тому останні 4 td завжди Білки/Жири/Вуглеводи/Ціна, в будь-якому рядку */
-tbody td:nth-last-child(-n + 4) {
+/* rowspan Категорії зʼїдає клітинку з початку рядка, не з кінця —
+   тому останні 2 td завжди Калорійність/Вага, в будь-якому рядку */
+tbody td:nth-last-child(-n + 2) {
   text-align: right;
 }
 
@@ -335,9 +355,9 @@ a:active { color: var(--color-text); }
 
 /* Темна тема */
 body.dark-theme {
-  --color-bg: hsl(218 35% 10%);
-  --color-surface: hsl(218 30% 16%);
-  --color-text: hsl(37 35% 92%);
-  --color-muted: hsl(221 14% 65%);
-  --color-hover: hsl(15 40% 22%);
+  --color-bg: hsl(100 20% 8%);
+  --color-surface: hsl(100 18% 14%);
+  --color-text: hsl(90 25% 92%);
+  --color-muted: hsl(100 8% 60%);
+  --color-hover: hsl(100 25% 20%);
 }
