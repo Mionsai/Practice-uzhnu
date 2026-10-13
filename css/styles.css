@@ -456,3 +456,34 @@ body.dark-theme {
   --color-muted: hsl(100 8% 60%);
   --color-hover: hsl(100 25% 20%);
 }
+
+/* Банер  */
+.banner {
+  width: min(100%, 900px);
+  margin: 0 auto var(--space-lg);
+  padding: var(--space-lg);
+  border-radius: var(--radius);
+  color: var(--color-bg);
+  background-image: linear-gradient(120deg, var(--color-brand), var(--color-accent));
+  /* світлий кінець градієнта сам по собі не дуже темний —
+     тінь під текстом тримає контраст по всій довжині банера, а не тільки
+     на темному краю */
+  text-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+}
+
+.banner h2 {
+  color: var(--color-bg);
+  margin-top: 0;
+}
+
+/* ===== Демонстрація: схлопування відступів =====
+   Якщо розкоментувати цей блок, відстань між сусідніми картками по
+   вертикалі буде НЕ 24+16=40px, а 24px: два вертикальні відступи, що
+   стикаються, не додаються, а зливаються в один — більший із двох.
+   Горизонтальні відступи так не поводяться, вони завжди додаються.
+   Саме тому в цій роботі всі вертикальні відступи задані тільки в
+   один бік — знизу (.cards .card, .card__title/.card__meta/.card__id).
+
+.card { margin-bottom: 24px; }
+.card + .card { margin-top: 16px; }
+*/
