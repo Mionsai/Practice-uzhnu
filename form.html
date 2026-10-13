@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Підписка на щотижневий бокс — Чиста полиця</title>
     <link rel="icon" href="images/favicon.jpg">
 </head>
@@ -17,7 +18,7 @@
                 <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="index.html#store">Про проєкт</a></li>
                 <li><a href="index.html#alergic">Алергени</a></li>
-                <li><a href="form.html">Підписка</a></li>
+                <li><a href="form.html" class="current">Підписка</a></li>
                 <li><a href="about.html">Контакти</a></li>
             </ul>
         </nav>
@@ -33,7 +34,8 @@
         </p>
 
         <form action="/submit" method="post">
-            <!-- method="post": форма створює нову підписку, тому повторне надсилання по F5 немає відбуватися випадково, а персональні дані не повинні лишатися в URL -->
+            <!-- method="post": форма створює нову підписку, тому повторне надсилання
+                 по F5 не має відбуватися випадково, а персональні дані не повинні лишатися в URL -->
 
             <fieldset>
                 <legend>Дані користувача</legend>
@@ -65,6 +67,13 @@
                     <input type="date" id="delivery-date" name="delivery_date"
                         min="2026-09-01" max="2027-06-30" required>
                 </p>
+
+                <p>
+                    <label for="address">Адреса доставки:</label>
+                    <input type="text" id="address" name="address"
+                        placeholder="м. Ужгород, вул. Незалежності, 10, кв. 5"
+                        minlength="10" maxlength="120" required>
+                </p>
             </fieldset>
 
             <fieldset>
@@ -88,13 +97,13 @@
                 </p>
 
                 <fieldset>
-                    <legend>Розмір боксу</legend>
-                    <input type="radio" id="size-s" name="box_size" value="s">
-                    <label for="size-s">S — 5 продуктів</label>
-                    <input type="radio" id="size-m" name="box_size" value="m" checked>
-                    <label for="size-m">M — 8 продуктів</label>
-                    <input type="radio" id="size-l" name="box_size" value="l">
-                    <label for="size-l">L — 12 продуктів</label>
+                    <legend>Періодичність боксу</legend>
+                    <input type="radio" id="freq-weekly" name="box_frequency" value="weekly" checked>
+                    <label for="freq-weekly">Щотижня</label>
+                    <input type="radio" id="freq-biweekly" name="box_frequency" value="biweekly">
+                    <label for="freq-biweekly">Раз на два тижні</label>
+                    <input type="radio" id="freq-monthly" name="box_frequency" value="monthly">
+                    <label for="freq-monthly">Щомісяця</label>
                 </fieldset>
 
                 <fieldset>
@@ -107,12 +116,14 @@
                     <label for="no-lactose">Лактоза</label>
                 </fieldset>
 
+
                 <p>
-                    <label for="product-code">Код улюбленого продукту:</label>
+                    <label for="product-code">Код стартового продукту:</label>
                     <input type="text" id="product-code" name="product_code"
                         placeholder="HF-0782-UA"
                         pattern="HF-[0-9]{4}-UA"
-                        title="Код продукту у форматі HF-0000-UA: літери HF, дефіс, чотири цифри, дефіс, літери UA, наприклад HF-0782-UA">
+                        title="Код продукту у форматі HF-0000-UA: літери HF, дефіс, чотири цифри, дефіс, літери UA, наприклад HF-0782-UA"
+                        required>
                 </p>
             </fieldset>
 
