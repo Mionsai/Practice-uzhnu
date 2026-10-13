@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito+Sans:wght@400;700&subset=cyrillic&display=swap');
 
+/* content-box рахує width лише для вмісту: рамка й padding
+   додаються зверху, тому колонка з width:50% і padding:16px стає ширшою за 50%.
+   border-box включає border і padding у вказаний width — колонка лишається
+   рівно 50%, і дві такі колонки по 50% завжди помістяться в рядок, скільки
+   padding не додавай */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* еко-палітра: трав'яний зелений, світлий фон, коричневий крафт-колір
      для паковання, окремий червоний для попередження про алергени */
@@ -16,10 +25,14 @@
   --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
   --radius: 0.5rem;
-  --space: 1rem;
+  --space-xs: 0.25rem;
   --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
   --measure: 65ch;
   --shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --card-width: 260px;
+  --card-img-h: 170px;
 }
 
 /* Типографіка */
@@ -57,15 +70,15 @@ strong, b {
 header, main, footer {
   max-width: 60rem;
   margin: 0 auto;
-  padding-inline: var(--space);
+  padding-inline: var(--space-md);
   box-sizing: border-box;
 }
 
 main {
-  padding-block: var(--space);
+  padding-block: var(--space-md);
 }
 
-/* Мітки: еко-паковання (крафт-коричневий) і попередження про алергени (червоний) */
+/* Мітки: еко-паковання і попередження про алергени */
 .badge-eco,
 .badge-allergen {
   display: inline-block;
@@ -105,7 +118,7 @@ nav[aria-label="Головне меню"] li {
 
 nav[aria-label="Головне меню"] a {
   display: inline-block;
-  padding: var(--space-sm) var(--space);
+  padding: var(--space-sm) var(--space-md);
   color: var(--color-bg);
   font-weight: 700;
   text-decoration: none;
@@ -147,7 +160,7 @@ footer {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-block: var(--space);
+  margin-block: var(--space-md);
   box-shadow: var(--shadow, 0 2px 8px rgb(0 0 0 / 10%));
   
 }
@@ -205,8 +218,8 @@ tfoot td { text-align: right; }
 fieldset {
   border: 1px solid var(--color-muted);
   border-radius: var(--radius);
-  margin-bottom: var(--space);
-  padding: var(--space);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
 }
 
 legend {
@@ -254,7 +267,7 @@ textarea:focus:valid {
 }
 
 /* :has(> input:required) - обгортка-<p> з обов'язковим полем,
-   не важливо, label стоїть до input чи після (чекбокс agree) */
+   не важливо, label стоїть до input чи після */
 p:has(> input:required) label::after,
 p:has(> select:required) label::after {
   content: " *";
@@ -266,7 +279,7 @@ button[type="submit"],
 button[type="reset"] {
   border: none;
   border-radius: var(--radius);
-  padding: var(--space-sm) var(--space);
+  padding: var(--space-sm) var(--space-md);
   font-weight: 700;
   cursor: pointer;
 }
@@ -314,7 +327,7 @@ aside li::marker {
   color: var(--color-brand);
 }
 
-/* нащадок (пробіл) — усі <a> всередині <main>, на будь-якій глибині */
+/* нащадок — усі <a> всередині <main>, на будь-якій глибині */
 main a {
   color: var(--color-brand);
 }
