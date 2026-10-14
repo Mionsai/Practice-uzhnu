@@ -1,3 +1,4 @@
+/* Чиста полиця — варіант 9, Полажинець Михайло, 14.10.2026 */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito+Sans:wght@400;700&subset=cyrillic&display=swap');
 
 :root {
@@ -141,15 +142,13 @@ footer {
 
 
 
-/* Таблиця каталогу
-об'єданно код з пластівців та горохів виглядає не дуже, не можу згадати що треба використати аби воно виглядало нормально
-*/
+/* Таблиця каталогу */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-block: var(--space);
+  /* запасне значення після коми спрацює, якщо --shadow раптом прибрати з :root */
   box-shadow: var(--shadow, 0 2px 8px rgb(0 0 0 / 10%));
-  
 }
 
 caption {
@@ -242,7 +241,9 @@ textarea {
 input:focus:invalid,
 select:focus:invalid,
 textarea:focus:invalid {
-  border-color: var(--color-accent);
+  /* червоний (--color-allergen), а не --color-accent — обидва зелені з :valid
+     майже не відрізнялись би одне від одного */
+  border-color: var(--color-allergen);
   background: var(--color-surface);
 }
 
@@ -307,8 +308,9 @@ aside li::marker {
   font-size: 1.2em;
 }
 
-/* ::first-letter — буквиця в першому абзаці вступу */
-#store > p:first-of-type::first-letter {
+/* ::first-letter — буквиця в першому абзаці вступу (#store сидить на h2,
+   тому це сусід через +, а не дитина через >) */
+#store + p::first-letter {
   font-family: var(--font-heading);
   font-size: 2em;
   color: var(--color-brand);
