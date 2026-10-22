@@ -21,6 +21,7 @@
                 <li><a href="form.html" class="current">Підписка</a></li>
                 <li><a href="about.html">Контакти</a></li>
             </ul>
+            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
         </nav>
     </header>
 
@@ -33,7 +34,7 @@
             підтвердженням підписки та датою першої доставки.
         </p>
 
-        <form action="/submit" method="post">
+        <form class="form-grid" action="/submit" method="post">
             <!-- method="post": форма створює нову підписку, тому повторне надсилання
                  по F5 не має відбуватися випадково, а персональні дані не повинні лишатися в URL -->
 
@@ -145,7 +146,7 @@
                 <legend>Додатково</legend>
 
                 <p>
-                    <label for="comment">Побажання до складу боксу:</label><br>
+                    <label for="comment">Побажання до складу боксу:</label>
                     <textarea id="comment" name="comment" rows="4" cols="50"
                         minlength="10" maxlength="500"
                         placeholder="Наприклад: менше солодкого, більше круп і бобових"></textarea>
