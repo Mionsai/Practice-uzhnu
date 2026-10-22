@@ -584,6 +584,10 @@ main { flex: 1; }
      flex: 1 розтягнув би .layout, але foot лишився б одразу під вмістом */
   grid-template-rows: 1fr auto;
   gap: var(--gap);
+  /* явно: грід-елементи розтягуються на всю висоту рядка (це й так
+     значення за замовчуванням, прописую для наочності) — тому
+     .layout__nav сам іде до низу, по висоті найвищої сусідньої зони */
+  align-items: stretch;
 }
 
 .layout__nav  { grid-area: nav; }
@@ -603,6 +607,7 @@ main { flex: 1; }
 .layout__nav,
 .layout__aside {
   background: var(--color-surface);
+  border: 1px solid var(--color-muted);
   border-radius: var(--radius);
   padding: var(--space-md);
 }
