@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Чиста полиця — крамниця корисних продуктів</title>
     <link rel="icon" href="images/favicon.jpg">
 </head>
@@ -14,7 +15,7 @@
         <!-- Навігація -->
         <nav aria-label="Головне меню">
             <ul>
-                <li><a href="index.html">Головна</a></li>
+                <li><a href="index.html" class="current">Головна</a></li>
                 <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="index.html#store">Про проєкт</a></li>
                 <li><a href="index.html#alergic">Алергени</a></li>
@@ -25,13 +26,17 @@
     </header>
 
     <main>
-        <!-- Перше зображення: видно одразу, тому без lazy -->
+        <section class="banner">
+            <h2>Корисні продукти без зайвих запитань</h2>
+            <p>Повний склад, харчова цінність і позначка алергенів — на кожній картці товару.</p>
+        </section>
+
+        <!-- Перше зображення видно одразу, тому без lazy -->
         <picture>
             <source srcset="images/healthy-shelf.webp" type="image/webp">
             <source srcset="images/healthy-shelf.jpg" type="image/jpeg">
             <img src="images/healthy-shelf.jpg" alt="Полиця з крупами, горіхами та іншими корисними продуктами у скляних банках" width="500" height="219">
         </picture>
-
 
         <section>
             <h2 id="store">Про проєкт</h2>
@@ -57,7 +62,6 @@
             <p><a href="#top">Нагору</a></p>
         </section>
 
-
         <section>
             <h2 id="alergic">Алергени та фільтрація</h2>
             <p>
@@ -72,12 +76,12 @@
                 <a href="https://www.who.int/health-topics/healthy-diet" target="_blank" rel="noopener noreferrer">Всесвітньої організації охорони здоров'я</a>.
             </p>
 
-            <article>
+            <article class="card" id="promo">
                 <header>
                     <h3>Вівсяні пластівці</h3>
                 </header>
                 <figure>
-                    <img src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці" width="200" height="300" loading="lazy">
+                    <img src="images/oat.webp" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці" width="400" height="300" loading="lazy">
                     <figcaption>Вівсяні пластівці в паперовому пакеті, що піддається переробці</figcaption>
                 </figure>
                 <p>
@@ -85,21 +89,21 @@
                     Виготовлені зі 100% органічного вівса, ідеально підходять для
                     швидкого та поживного сніданку.
                 </p>
-                <p>Пакування — паперовий пакет, піддається переробці.</p>
+                <p>Пакування — паперовий пакет, піддається переробці. <span class="badge-eco">еко-паковання</span></p>
                 <footer>
                     <p>Код: HF-9321-UA · Ціна: 70₴ · В наявності</p>
                     <p>Додано: <time datetime="2026-09-20">20.09.2026</time></p>
                 </footer>
             </article>
 
-            <article>
+            <article class="card">
                 <header>
                     <h3>Мікс горіхів</h3>
                 </header>
-                <img src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці" width="400" height="300" loading="lazy">
+                <img src="images/nuts.webp" alt="Суміш мигдалю, волоських горіхів і фініків у мисці" width="300" height="300" loading="lazy">
                 <p>
                     Суміш мигдалю, волоського горіха та фініків без додавання солі
-                    та цукру. Містить алергени: горіхи.
+                    та цукру. Містить алергени: <span class="badge-allergen">горіхи</span>
                 </p>
                 <footer>
                     <p>Код: HF-1342-UA · Ціна: 58₴ · В наявності</p>
