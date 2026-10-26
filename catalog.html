@@ -292,12 +292,23 @@
         </main>
 
         <aside class="layout__aside">
-            <h2>Популярне</h2>
-            <ul>
-                <li>Безкоштовна доставка по Україні при замовленні від 800₴.</li>
-                <li>Товари з бейджем «Еко» — у паперовому чи скляному пакованні.</li>
-                <li>Алергени можна виключити у формі підписки на бокс.</li>
-            </ul>
+            <h2>Фільтр</h2>
+            <!-- статичний фільтр: без JS він нічого не приховує,
+                 але розмітка й стилі вже готові під тему 9 -->
+            <form>
+                <fieldset>
+                    <legend>Категорія</legend>
+                    <label><input type="checkbox" name="category" value="cereals" checked> Крупи та пластівці</label>
+                    <label><input type="checkbox" name="category" value="nuts" checked> Горіхи та сухофрукти</label>
+                    <label><input type="checkbox" name="category" value="sauces" checked> Соуси та пасти</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Матеріал паковання</legend>
+                    <label><input type="checkbox" name="material" value="paper" checked> Паперове</label>
+                    <label><input type="checkbox" name="material" value="glass" checked> Скляне</label>
+                    <label><input type="checkbox" name="material" value="plastic" checked> Пластикове</label>
+                </fieldset>
+            </form>
         </aside>
 
         <footer class="layout__footer">
@@ -311,10 +322,10 @@
     <dialog id="details">
         <h2>Вівсяні пластівці</h2>
         <p>Ідентифікатор: HF-9321-UA</p>
-        <p>Розгорнутий опис: калорійність 362 ккал/100 г, вага паковання
-            400 г, ціна 70₴. Пакування — паперовий пакет, піддається
-            переробці (еко). Склад — 100% цільнозернові вівсяні пластівці.
-            Алерген: глютен.</p>
+        <p>Склад: 100% цільнозернові вівсяні пластівці.</p>
+        <p>Харчова цінність на 100 г: 362 ккал.</p>
+        <p>Вага паковання: 400 г · Ціна: 70₴ · Пакування: паперовий пакет
+            (еко) · Алерген: глютен.</p>
         <button id="closeDetails" type="button">Закрити</button>
     </dialog>
 
