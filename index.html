@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Чиста полиця — крамниця корисних продуктів</title>
     <link rel="icon" href="images/favicon.jpg">
 </head>
@@ -14,24 +15,40 @@
         <!-- Навігація -->
         <nav aria-label="Головне меню">
             <ul>
-                <li><a href="index.html">Головна</a></li>
+                <li><a href="index.html" class="current">Головна</a></li>
                 <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="index.html#store">Про проєкт</a></li>
                 <li><a href="index.html#alergic">Алергени</a></li>
                 <li><a href="form.html">Підписка</a></li>
                 <li><a href="about.html">Контакти</a></li>
             </ul>
+            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
         </nav>
     </header>
 
-    <main>
-        <!-- Перше зображення: видно одразу, тому без lazy -->
+    <div class="layout">
+        <nav class="layout__nav" aria-label="Розділи сторінки">
+            <h2>На сторінці</h2>
+            <ul>
+                <li><a href="#store">Про проєкт</a></li>
+                <li><a href="#alergic">Алергени та фільтрація</a></li>
+                <li><a href="#gallery">Галерея</a></li>
+                <li><a href="#faq">Питання та відповіді</a></li>
+            </ul>
+        </nav>
+
+        <main class="layout__main">
+        <section class="banner">
+            <h2>Корисні продукти без зайвих запитань</h2>
+            <p>Повний склад, харчова цінність і позначка алергенів — на кожній картці товару.</p>
+        </section>
+
+        <!-- Перше зображення видно одразу, тому без lazy -->
         <picture>
             <source srcset="images/healthy-shelf.webp" type="image/webp">
             <source srcset="images/healthy-shelf.jpg" type="image/jpeg">
             <img src="images/healthy-shelf.jpg" alt="Полиця з крупами, горіхами та іншими корисними продуктами у скляних банках" width="500" height="219">
         </picture>
-
 
         <section>
             <h2 id="store">Про проєкт</h2>
@@ -57,7 +74,6 @@
             <p><a href="#top">Нагору</a></p>
         </section>
 
-
         <section>
             <h2 id="alergic">Алергени та фільтрація</h2>
             <p>
@@ -72,12 +88,12 @@
                 <a href="https://www.who.int/health-topics/healthy-diet" target="_blank" rel="noopener noreferrer">Всесвітньої організації охорони здоров'я</a>.
             </p>
 
-            <article>
+            <article class="card" id="promo">
                 <header>
                     <h3>Вівсяні пластівці</h3>
                 </header>
                 <figure>
-                    <img src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці" width="200" height="300" loading="lazy">
+                    <img src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці" width="400" height="400" loading="lazy">
                     <figcaption>Вівсяні пластівці в паперовому пакеті, що піддається переробці</figcaption>
                 </figure>
                 <p>
@@ -85,21 +101,21 @@
                     Виготовлені зі 100% органічного вівса, ідеально підходять для
                     швидкого та поживного сніданку.
                 </p>
-                <p>Пакування — паперовий пакет, піддається переробці.</p>
+                <p>Пакування — паперовий пакет, піддається переробці. <span class="badge-eco">еко-паковання</span></p>
                 <footer>
                     <p>Код: HF-9321-UA · Ціна: 70₴ · В наявності</p>
                     <p>Додано: <time datetime="2026-09-20">20.09.2026</time></p>
                 </footer>
             </article>
 
-            <article>
+            <article class="card">
                 <header>
                     <h3>Мікс горіхів</h3>
                 </header>
-                <img src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці" width="400" height="300" loading="lazy">
+                <img src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці" width="300" height="300" loading="lazy">
                 <p>
                     Суміш мигдалю, волоського горіха та фініків без додавання солі
-                    та цукру. Містить алергени: горіхи.
+                    та цукру. Містить алергени: <span class="badge-allergen">горіхи</span>
                 </p>
                 <footer>
                     <p>Код: HF-1342-UA · Ціна: 58₴ · В наявності</p>
@@ -110,7 +126,18 @@
             <p><a href="#top">Нагору</a></p>
         </section>
 
-        <section>
+        <section id="gallery">
+            <h2>Галерея</h2>
+            <p>Фото товарів із каталогу — дві-три картки навмисно більші за решту.</p>
+            <div class="gallery">
+                <img class="gallery__item--tall" src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці" loading="lazy">
+                <img class="gallery__item--wide" src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці" loading="lazy">
+                <img src="images/buckwheat.jpg" alt="Необроблена гречана крупа в мисці" loading="lazy">
+                <img src="images/hummus.jpg" alt="Хумус класичний у скляній банці з оливковою олією зверху" loading="lazy">
+            </div>
+        </section>
+
+        <section id="faq">
             <h2>Питання та відповіді</h2>
             <details open>
                 <summary>Як дізнатися, чи є в продукті алергени?</summary>
@@ -125,8 +152,9 @@
                 <p>Так, склад боксу можна змінити в особистому кабінеті до четверга, щоб зміни діяли з наступного тижня.</p>
             </details>
         </section>
+        </main>
 
-        <aside>
+        <aside class="layout__aside">
             <h2>Корисні поради</h2>
             <ul>
                 <li>Безкоштовна доставка по Україні при замовленні від 800₴.</li>
@@ -134,14 +162,14 @@
                 <li>Склад щотижневого боксу можна змінити до четверга.</li>
             </ul>
         </aside>
-    </main>
 
-    <footer>
-        <p>Полажинець Михайло, 2026</p>
-        <address>
-            м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
-        </address>
-    </footer>
+        <footer class="layout__footer">
+            <p>Полажинець Михайло, 2026</p>
+            <address>
+                м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
+            </address>
+        </footer>
+    </div>
 </body>
 
 </html>

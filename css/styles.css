@@ -1,0 +1,729 @@
+/* Чиста полиця — варіант 9, Полажинець Михайло, 21.10.2026 */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito+Sans:wght@400;700&subset=cyrillic&display=swap');
+
+/* content-box рахує width лише для вмісту: рамка й padding
+   додаються зверху, тому колонка з width:50% і padding:16px стає ширшою за 50%.
+   border-box включає border і padding у вказаний width — колонка лишається
+   рівно 50%, і дві такі колонки по 50% завжди помістяться в рядок, скільки
+   padding не додавай */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* без max-width:100% одна завелика картинка (ширша за свій контейнер)
+   розсуває все навколо й ламає верстку на вузькому екрані; height:auto
+   тримає пропорції, поки ширина підлаштовується */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+:root {
+  /* еко-палітра: трав'яний зелений, світлий фон, коричневий крафт-колір
+     для паковання, окремий червоний для попередження про алергени */
+  --color-brand: hsl(100 40% 28%);   /* трав'яний зелений, темніший */
+  --color-accent: hsl(100 45% 40%);  /* трав'яний зелений, акцент */
+  --color-bg: hsl(90 30% 97%);
+  --color-surface: hsl(95 25% 92%);
+  --color-text: hsl(100 15% 13%);
+  --color-muted: hsl(100 8% 40%);
+  --color-hover: hsl(100 30% 90%);   /* підсвітка рядка таблиці */
+  --color-craft: hsl(28 35% 40%);    /* коричневий, крафт-паковання */
+  --color-allergen: hsl(0 70% 45%);  /* червоний, попередження про алергени */
+
+  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+  --radius: 0.5rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --measure: 65ch;
+  --shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --card-img-h: 170px;
+
+  /* змінні макета (LR6) */
+  --gap: 1rem;        /* єдиний проміжок сітки — і в картках, і в .layout */
+  /* mobile-first: базове значення розраховане під телефон (1 картка
+     в ряд навіть на 360px), більші числа підставляються в медіазапитах
+     LR7, щоб на планшеті/десктопі в ряд влазило 2/3 картки */
+  --min-col: 260px;   /* мінімальна ширина колонки каталогу */
+  --sidebar: 220px;   /* ширина бічної колонки макета (тільки десктоп) */
+  --gallery-row: 120px; /* висота рядка щільної галереї (бонус) */
+}
+
+/* Типографіка */
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--color-brand);
+}
+
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.4rem; }
+
+p {
+  max-width: var(--measure);
+}
+
+strong, b {
+  font-weight: 700;
+}
+
+/* "> header"/"> footer" — рівно той header/footer сторінки, прямий нащадок body;
+   без цього скоупу правило ловило б і вкладені header/footer усередині
+   карток товарів (index.html), а там своя розмітка. .layout__footer — підвал
+   сторінок із макетом (він уже не прямий нащадок body, бо живе всередині .layout) */
+.layout, body > main, body > footer, .layout__footer {
+  /* 1440px — обмеження на всю сторінку, завдання явно виключає такі числа
+     з правила "жодного магічного числа в gap/треках" */
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  padding-inline: var(--space-md);
+  box-sizing: border-box;
+}
+
+main {
+  padding-block: var(--space-md);
+}
+
+/* Мітки: еко-паковання і попередження про алергени */
+.badge-eco,
+.badge-allergen {
+  display: inline-block;
+  padding: 0.1em 0.6em;
+  border-radius: var(--radius);
+  color: var(--color-bg);
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.badge-eco {
+  background: var(--color-craft);
+}
+
+.badge-allergen {
+  background: var(--color-allergen);
+}
+
+/* Шапка та меню */
+/* z-index сам по собі нічого не "піднімає" - він лише визначає порядок
+   серед елементів, які вже мають власний контекст накладання. position
+   якраз і створює цей контекст; без нього z-index: 10
+   ні на що не вплине */
+/* header навмисно без обмеження ширини — тло розтягується на всю ширину
+   вікна, а не лише до 1440px, як решта контенту */
+body > header {
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-brand);
+  padding: var(--space-sm) var(--space-md);
+  /* назва сайту ліворуч, меню (+ кнопка теми) праворуч — розсуває їх
+     justify-content, а не float і не порожні відступи */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  /* запобіжник проти горизонтальної прокрутки на вузьких телефонах:
+     якщо назві сайту й меню раптом не вистачить ряду в 360px, вони
+     переносяться другим рядком замість того, щоб стиснути одне одного
+     й виштовхнути шапку за межі екрана */
+  flex-wrap: wrap;
+}
+
+body > header h1 {
+  color: var(--color-bg);
+  /* clamp замість фіксованого 1.6rem: на вузькому екрані шрифт трохи
+     менший, тому назві сайту й кнопкам меню/теми легше влізти в один ряд */
+  font-size: clamp(1.15rem, 1rem + 2vw, 1.6rem);
+}
+
+nav[aria-label="Головне меню"] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+nav[aria-label="Головне меню"] ul {
+  display: flex;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav[aria-label="Головне меню"] a {
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-bg);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+#themeToggle {
+  border: 1px solid var(--color-bg);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-bg);
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+nav[aria-label="Головне меню"] a:hover {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* клас current переїжджає на пункт активної сторінки в кожному html-файлі */
+nav[aria-label="Головне меню"] a.current {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+nav[aria-label="Навігація по сторінці"] ul {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+body > footer,
+.layout__footer {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  padding-block: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+/*==== Картки каталогу: Grid замість inline-block ====*/
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min-col), 1fr));
+  gap: var(--gap);
+  padding-top: var(--space-sm);
+}
+
+.cards .card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  /* overflow: hidden обрізає кути картинки по заокругленому border-radius
+     картки — без цього зображення перекривало б
+     закруглення своїми прямими кутами */
+  overflow: hidden;
+  /* система відліку для .card__badge: абсолютний елемент рахує координати
+     відносно найближчого позиціонованого предка. Якщо прибрати relative —
+     такого предка в картки не лишається, і бейдж рахує top/right відносно
+     body, тобто "вилітає" у правий верхній кут усієї сторінки */
+  position: relative;
+  /* нутрощі картки — колонка Flexbox, щоб кнопку дії можна було
+     притиснути до низу через margin-top: auto */
+  display: flex;
+  flex-direction: column;
+}
+
+/* картка "рекомендуємо" (бонус): виводиться першою в сітці через order,
+   без зміни порядку в HTML — ту саму властивість розуміє і Grid, і Flexbox */
+.card--featured {
+  order: -1;
+  border-color: var(--color-accent);
+}
+
+.card__img {
+  /* img — рядковий елемент, тому під ним лишається кілька пікселів
+     "хвоста" рядка; display: block
+     прибирає цей зазор */
+  display: block;
+  width: 100%;
+  height: var(--card-img-h);
+  object-fit: cover;
+  object-position: center;
+}
+
+.card__body {
+  padding: var(--space-md);
+}
+
+.card__title,
+.card__meta,
+.card__id {
+  margin: 0 0 var(--space-sm);
+  line-height: 1.3;
+}
+
+.card__title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* margin: 0 auto центрує блок по горизонталі, бо "з'їдає" весь вільний
+   простір ліворуч і праворуч порівну; тут та сама авто-властивість працює
+   по вертикальній осі flex-колонки — весь вільний простір над елементом
+   іде в margin-top, і елемент притискається до нижнього краю картки */
+.card__actions {
+  margin-top: auto;
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  padding-top: 0;
+}
+
+.card__action {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-accent);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+/* без цього global a:hover (колір --color-accent) зливається з тим
+   самим --color-accent у фоні кнопки — текст ставав невидимим */
+.card__action:hover {
+  color: var(--color-bg);
+}
+
+#openDetails {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.card__meta,
+.card__id {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* "Еко" — той самий крафт-коричневий, що й .badge-eco в описі товару,
+   бейдж показуємо тільки для карток з eco: true */
+.card__badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-craft);
+  color: var(--color-bg);
+  font-size: 0.8rem;
+  border-radius: 999px;
+}
+
+
+
+/* Таблиця каталогу */
+/* на вузькому екрані таблиця з 4 колонками не стискається до 360px без
+   втрати читабельності — прокручуємо вбік саму таблицю, а не всю сторінку */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  /* відступ тільки знизу — та сама дисципліна проти схлопування, що й у картках */
+  margin-bottom: var(--space-md);
+  /* запасне значення після коми спрацює, якщо --shadow раптом прибрати з :root */
+  box-shadow: var(--shadow, 0 2px 8px rgb(0 0 0 / 10%));
+}
+
+caption {
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+
+th, td {
+  border: 1px solid var(--color-muted);
+  padding: var(--space-sm);
+}
+
+thead th {
+  background: var(--color-brand);
+  color: var(--color-bg);
+  text-align: left;
+}
+
+/* Калорійність і вага — останні 2 колонки заголовка, праворуч */
+thead th:nth-last-child(-n + 2) {
+  text-align: right;
+}
+
+tbody th {
+  text-align: left;
+}
+
+/* rowspan Категорії зʼїдає клітинку з початку рядка, не з кінця —
+   тому останні 2 td завжди Калорійність/Вага, в будь-якому рядку */
+tbody td:nth-last-child(-n + 2) {
+  text-align: right;
+}
+
+/* even = 2n, фарбуємо парні рядки (2, 4, 6…) */
+tbody tr:nth-child(even) {
+  background: var(--color-surface);
+}
+
+tbody tr:hover {
+  background: var(--color-hover);
+}
+
+tfoot th,
+tfoot td {
+  font-weight: 700;
+}
+
+tfoot th { text-align: left; }
+tfoot td { text-align: right; }
+
+/* Форма підписки */
+fieldset {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+}
+
+legend {
+  font-family: var(--font-heading);
+  color: var(--color-brand);
+  padding-inline: var(--space-sm);
+}
+
+label {
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  max-width: 24rem;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* просто :invalid спрацював би одразу на пустій required-формі ще до вводу -
+   тому :focus:invalid, підсвітка лише в полі, яке зараз редагують */
+input:focus:invalid,
+select:focus:invalid,
+textarea:focus:invalid {
+  /* червоний (--color-allergen), а не --color-accent — обидва зелені з :valid
+     майже не відрізнялись би одне від одного */
+  border-color: var(--color-allergen);
+  background: var(--color-surface);
+}
+
+input:focus:valid,
+select:focus:valid,
+textarea:focus:valid {
+  border-color: var(--color-brand);
+  background: var(--color-surface);
+}
+
+/* :has(> input:required) - обгортка-<p> з обов'язковим полем,
+   не важливо, label стоїть до input чи після */
+p:has(> input:required) label::after,
+p:has(> select:required) label::after {
+  content: " *";
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+button[type="submit"],
+button[type="reset"] {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+button[type="reset"] {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border: 1px solid var(--color-muted);
+}
+
+/* Інші обов'язкові селектори */
+
+/* :first-child — перша порада виділена лінією зверху */
+aside li:first-child {
+  border-top: 2px solid var(--color-accent);
+  padding-top: var(--space-sm);
+}
+
+/* :last-child — останній блок питань без зайвого відступу знизу */
+details:last-child {
+  margin-bottom: 0;
+}
+
+/* :checked — підпис вибраного розміру боксу жирним і фірмовим кольором */
+input[type="radio"]:checked + label {
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+/* ::marker — колір і розмір маркерів списку порад */
+aside li::marker {
+  color: var(--color-accent);
+  font-size: 1.2em;
+}
+
+/* ::first-letter — буквиця в першому абзаці вступу (#store сидить на h2,
+   тому це сусід через +, а не дитина через >) */
+#store + p::first-letter {
+  font-family: var(--font-heading);
+  font-size: 2em;
+  color: var(--color-brand);
+}
+
+/* нащадок — усі <a> всередині <main>, на будь-якій глибині */
+main a {
+  color: var(--color-brand);
+}
+
+
+main > p {
+  margin-inline: 0;
+}
+
+/* атрибутний селектор: зовнішні посилання позначені стрілкою */
+a[href^="http"]::after {
+  content: " ↗";
+}
+
+a[href$=".pdf"]::after {
+  content: " (PDF)";
+}
+
+/* LVHFA: однакова специфічність у всіх чотирьох, тому порядок у файлі
+   вирішує, хто переможе — пізніше правило перебиває раніше */
+a:link { color: var(--color-brand); }
+a:visited { color: var(--color-muted); }
+a:hover { color: var(--color-accent); }
+a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+a:active { color: var(--color-text); }
+
+/* Специфічність: заголовок картки товару (h3 у #promo)
+   h3        — (0,0,1)
+   .card h3  — (0,1,1)
+   #promo h3 — (1,0,1)  перемагає — id не наздогнати жодною кількістю класів */
+/* h3       { color: var(--color-text); } */
+/* .card h3 { color: var(--color-muted); } */
+#promo h3 { color: var(--color-brand); }
+
+/* inline-стиль переміг би все вище — специфічність інлайну вища за id,
+   але тоді колір довелося б міняти прямо в розмітці, а не в одному файлі */
+/* <h3 style="color: purple;">Вівсяні пластівці</h3> */
+
+/* Темна тема */
+body.dark-theme {
+  --color-bg: hsl(100 20% 8%);
+  --color-surface: hsl(100 18% 14%);
+  --color-text: hsl(90 25% 92%);
+  --color-muted: hsl(100 8% 60%);
+  --color-hover: hsl(100 25% 20%);
+}
+
+/* Банер  */
+.banner {
+  width: min(100%, 900px);
+  margin: 0 auto var(--space-lg);
+  padding: var(--space-lg);
+  border-radius: var(--radius);
+  color: var(--color-bg);
+  background-image: linear-gradient(120deg, var(--color-brand), var(--color-accent));
+  /* світлий кінець градієнта сам по собі не дуже темний —
+     тінь під текстом тримає контраст по всій довжині банера, а не тільки
+     на темному краю */
+  text-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+}
+
+.banner h2 {
+  color: var(--color-bg);
+  margin-top: 0;
+}
+
+/* ===== Притиснутий футер =====
+   main росте на form.html, де немає .layout (body > main відповідає лише
+   йому — на catalog/index <main> вже всередині .layout, grid-елементом,
+   і flex там нічого не важить, бо це не flex-дитина body) */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout { flex: 1; }
+main { flex: 1; }
+
+/* ===== Макет сторінки: grid-template-areas =====
+   header лишається поза .layout: липкий елемент "їздить" тільки в межах
+   свого контейнера, а грід-областю для header був би один короткий рядок —
+   їздити нема де, sticky перестав би прилипати */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar) 1fr var(--sidebar);
+  grid-template-areas:
+    "nav  main side"
+    "foot foot foot";
+  /* рядок зон росте (1fr), рядок футера — по вмісту (auto); без цього
+     flex: 1 розтягнув би .layout, але foot лишився б одразу під вмістом */
+  grid-template-rows: 1fr auto;
+  gap: var(--gap);
+  /* явно: грід-елементи розтягуються на всю висоту рядка (це й так
+     значення за замовчуванням, прописую для наочності) — тому
+     .layout__nav сам іде до низу, по висоті найвищої сусідньої зони */
+  align-items: stretch;
+}
+
+.layout__nav  { grid-area: nav; }
+.layout__main { grid-area: main; }
+.layout__aside {
+  grid-area: side;
+  /* бонус: липка бічна колонка — прокручується разом зі сторінкою,
+     зупиняється під шапкою */
+  position: sticky;
+  top: 5rem;
+  /* без align-self:start grid-елемент за замовчуванням розтягнутий на
+     всю висоту своєї області, і "їздити" йому нема де — sticky не спрацює */
+  align-self: start;
+}
+.layout__footer { grid-area: foot; }
+
+.layout__nav,
+.layout__aside {
+  background: var(--color-surface);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+/* ===== Модальне вікно <dialog> =====
+   z-index тут не потрібен: відкритий через showModal() dialog браузер сам
+   виводить у top layer — окремий шар понад усім стеком сторінки, вище за
+   будь-який звичайний контекст накладання (на відміну від липкої шапки,
+   якій z-index потрібен був у LR5) */
+dialog {
+  width: min(90%, 420px);
+  padding: var(--space-lg);
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 35%);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 55%);
+}
+
+dialog h2 {
+  margin-top: 0;
+}
+
+dialog button {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-md);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ===== Бонус: щільна галерея =====
+   dense заповнює дірки в сітці наступними елементами не по порядку —
+   платимо за це тим, що візуальний порядок карток більше не збігається
+   з порядком у HTML (погано для читалки й для Tab-навігації) */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: var(--gallery-row);
+  grid-auto-flow: row dense;
+  gap: var(--gap);
+}
+
+.gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.gallery__item--wide { grid-column: span 2; }
+.gallery__item--tall { grid-row: span 2; }
+
+/* ===== Бонус: форма у дві колонки =====
+   display: contents прибирає коробку <p>, але лишає label/input у потоці —
+   вони стають прямими grid-дітьми fieldset і займають дві задані колонки.
+   Вкладені fieldset (радіо/чекбокси) і так не <p>, тому їх просто
+   розтягуємо на обидва треки, а їхній внутрішній вміст грід не чіпає */
+.form-grid fieldset {
+  display: grid;
+  grid-template-columns: var(--sidebar) 1fr;
+  gap: var(--space-sm) var(--gap);
+  align-items: center;
+}
+
+.form-grid fieldset > p { display: contents; }
+
+.form-grid fieldset > fieldset {
+  grid-column: 1 / -1;
+}
+
+/* ===== Демонстрація: схлопування відступів =====
+   Якщо розкоментувати цей блок, відстань між сусідніми картками по
+   вертикалі буде НЕ 24+16=40px, а 24px: два вертикальні відступи, що
+   стикаються, не додаються, а зливаються в один — більший із двох.
+   Горизонтальні відступи так не поводяться, вони завжди додаються.
+   Саме тому в цій роботі всі вертикальні відступи задані тільки в
+   один бік — знизу (.cards .card, .card__title/.card__meta/.card__id).
+
+.card { margin-bottom: 24px; }
+.card + .card { margin-top: 16px; }
+*/

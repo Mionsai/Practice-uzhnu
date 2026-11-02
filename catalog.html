@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Каталог товарів — Чиста полиця</title>
     <link rel="icon" href="images/favicon.jpg">
 </head>
@@ -14,26 +15,18 @@
         <nav aria-label="Головне меню">
             <ul>
                 <li><a href="index.html">Головна</a></li>
-                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="catalog.html" class="current">Каталог</a></li>
                 <li><a href="index.html#store">Про проєкт</a></li>
                 <li><a href="index.html#alergic">Алергени</a></li>
                 <li><a href="form.html">Підписка</a></li>
                 <li><a href="about.html">Контакти</a></li>
             </ul>
+            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
         </nav>
     </header>
 
-    <main>
-        <nav aria-label="Навігація по сторінці">
-            <ul>
-                <li><a href="#categories">Розділи каталогу</a></li>
-                <li><a href="#order-steps">Як оформити замовлення</a></li>
-                <li><a href="#glossary">Глосарій</a></li>
-                <li><a href="#products-table">Товари в наявності</a></li>
-            </ul>
-        </nav>
-
-        <section id="categories">
+    <div class="layout">
+        <nav class="layout__nav" aria-label="Рубрики каталогу">
             <h2>Розділи каталогу</h2>
             <ul>
                 <li>Крупи та пластівці
@@ -59,6 +52,135 @@
                 </li>
                 <li>Соуси та пасти</li>
             </ul>
+        </nav>
+
+        <main class="layout__main">
+        <nav aria-label="Навігація по сторінці">
+            <ul>
+                <li><a href="#order-steps">Як оформити замовлення</a></li>
+                <li><a href="#glossary">Глосарій</a></li>
+                <li><a href="#products-table">Товари в наявності</a></li>
+                <li><a href="#composition">Склад і алергени</a></li>
+                <li><a href="#catalog-cards">Картки товарів</a></li>
+            </ul>
+        </nav>
+
+        <section class="catalog" id="catalog-cards">
+            <h2>Каталог</h2>
+            <div class="cards">
+                <article class="card">
+                    <span class="card__badge">Еко</span>
+                    <img class="card__img" src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Вівсяні пластівці</h3>
+                        <p class="card__meta">Крупи та пластівці · 400 г</p>
+                        <p class="card__id">Ідентифікатор: HF-9321-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                        <button id="openDetails" type="button">Швидкий перегляд</button>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Мікс горіхів</h3>
+                        <p class="card__meta">Горіхи та сухофрукти · 250 г</p>
+                        <p class="card__id">Ідентифікатор: HF-1342-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/buckwheat.jpg" alt="Необроблена гречана крупа в мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Гречка зелена необроблена, пропарена, українського виробництва</h3>
+                        <p class="card__meta">Крупи та пластівці · 900 г</p>
+                        <p class="card__id">Ідентифікатор: HF-5567-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <span class="card__badge">Еко</span>
+                    <img class="card__img" src="images/hummus.jpg" alt="Хумус класичний у скляній банці з оливковою олією зверху">
+                    <div class="card__body">
+                        <h3 class="card__title">Хумус класичний домашній без консервантів і підсилювачів смаку</h3>
+                        <p class="card__meta">Соуси та пасти · 350 г</p>
+                        <p class="card__id">Ідентифікатор: HF-8824-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/quinoa.jpg" alt="Біла кіноа у мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Кіноа органічна біла</h3>
+                        <p class="card__meta">Крупи та пластівці · 400 г</p>
+                        <p class="card__id">Ідентифікатор: HF-3312-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/dried-apricots.jpg" alt="Сушена курага в дерев'яній мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Курага сушена без цукру</h3>
+                        <p class="card__meta">Горіхи та сухофрукти · 300 г</p>
+                        <p class="card__id">Ідентифікатор: HF-4456-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/almonds.jpg" alt="Мигдаль несмажений у мисці">
+                    <div class="card__body">
+                        <h3 class="card__title">Мигдаль несмажений натуральний</h3>
+                        <p class="card__meta">Горіхи та сухофрукти · 300 г</p>
+                        <p class="card__id">Ідентифікатор: HF-6678-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <img class="card__img" src="images/chia-seeds.jpg" alt="Насіння чіа в скляній банці">
+                    <div class="card__body">
+                        <h3 class="card__title">Насіння чіа органічне</h3>
+                        <p class="card__meta">Горіхи та сухофрукти · 200 г</p>
+                        <p class="card__id">Ідентифікатор: HF-7789-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+
+                <article class="card card--featured">
+                    <span class="card__badge">Рекомендуємо</span>
+                    <img class="card__img" src="images/tahini.jpg" alt="Паста тахіні зі свіжого кунжуту">
+                    <div class="card__body">
+                        <h3 class="card__title">Паста тахіні з кунжуту</h3>
+                        <p class="card__meta">Соуси та пасти · 300 г</p>
+                        <p class="card__id">Ідентифікатор: HF-2245-UA</p>
+                    </div>
+                    <div class="card__actions">
+                        <a class="card__action" href="#">Замовити</a>
+                    </div>
+                </article>
+            </div>
+            <p><a href="#top">Нагору</a></p>
         </section>
 
         <section id="order-steps">
@@ -99,81 +221,119 @@
         <section id="products-table">
             <h2>Товари в наявності</h2>
             <table>
-                <caption>Харчова цінність і ціни товарів</caption>
+                <caption>Калорійність і вага паковання товарів</caption>
                 <thead>
                     <tr>
-                        <th scope="col" rowspan="2">Товар</th>
-                        <th scope="col" rowspan="2">Категорія</th>
-                        <th scope="col" rowspan="2">Виробник</th>
-                        <th scope="col" colspan="3">Харчова цінність на 100 г</th>
-                        <th scope="col" rowspan="2">Ціна, ₴</th>
-                    </tr>
-                    <tr>
-                        <th scope="col">Білки, г</th>
-                        <th scope="col">Жири, г</th>
-                        <th scope="col">Вуглеводи, г</th>
+                        <th scope="col">Товар</th>
+                        <th scope="col">Категорія</th>
+                        <th scope="col">Калорійність, ккал/100 г</th>
+                        <th scope="col">Вага паковання, г</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <th scope="row">Вівсяні пластівці</th>
                         <td rowspan="2">Крупи та пластівці</td>
-                        <td rowspan="2">ТОВ «Ранок»</td>
-                        <td>12</td>
-                        <td>6</td>
-                        <td>60</td>
-                        <td>70</td>
+                        <td>362</td>
+                        <td>400</td>
                     </tr>
                     <tr>
                         <th scope="row">Гречка зелена</th>
-                        <td>13</td>
-                        <td>3</td>
-                        <td>62</td>
-                        <td>85</td>
+                        <td>343</td>
+                        <td>900</td>
                     </tr>
                     <tr>
                         <th scope="row">Мікс горіхів</th>
                         <td rowspan="2">Горіхи та сухофрукти</td>
-                        <td rowspan="2">ТОВ «Горіховий сад»</td>
-                        <td>13</td>
-                        <td>40</td>
-                        <td>35</td>
-                        <td>58</td>
+                        <td>607</td>
+                        <td>250</td>
                     </tr>
                     <tr>
                         <th scope="row">Мигдаль несмажений</th>
-                        <td>21</td>
-                        <td>50</td>
-                        <td>22</td>
-                        <td>160</td>
+                        <td>579</td>
+                        <td>300</td>
                     </tr>
                     <tr>
                         <th scope="row">Хумус класичний</th>
                         <td>Соуси та пасти</td>
-                        <td>ТОВ «Зелена ложка»</td>
-                        <td>8</td>
-                        <td>17</td>
-                        <td>14</td>
-                        <td>95</td>
+                        <td>166</td>
+                        <td>350</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th scope="row" colspan="6">Разом (5 позицій), середня ціна 93,6 ₴</th>
-                        <td>468</td>
+                        <th scope="row" colspan="3">Разом (5 позицій), сумарна вага пакувань</th>
+                        <td>2200</td>
                     </tr>
                 </tfoot>
             </table>
             <p><a href="#top">Нагору</a></p>
         </section>
-    </main>
 
-    <footer>
-        <p>Полажинець Михайло, 2026</p>
-        <address>
-            м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
-        </address>
-    </footer>
+        <section id="composition">
+            <h2>Склад і алергени</h2>
+            <details>
+                <summary>Вівсяні пластівці</summary>
+                <p>Склад: 100% цільнозернові вівсяні пластівці.</p>
+                <p>Алергени: <span class="badge-allergen">глютен</span></p>
+            </details>
+            <details>
+                <summary>Мікс горіхів</summary>
+                <p>Склад: мигдаль, волоський горіх, фініки.</p>
+                <p>Алергени: <span class="badge-allergen">горіхи</span></p>
+            </details>
+            <details>
+                <summary>Хумус класичний</summary>
+                <p>Склад: нут, тахіні (кунжутна паста), оливкова олія, часник, лимонний сік, сіль.</p>
+                <p>Алергени: <span class="badge-allergen">кунжут</span></p>
+            </details>
+            <p><a href="#top">Нагору</a></p>
+        </section>
+        </main>
+
+        <aside class="layout__aside">
+            <h2>Фільтр</h2>
+            <!-- статичний фільтр: без JS він нічого не приховує,
+                 але розмітка й стилі вже готові під тему 9 -->
+            <form>
+                <fieldset>
+                    <legend>Категорія</legend>
+                    <label><input type="checkbox" name="category" value="cereals" checked> Крупи та пластівці</label>
+                    <label><input type="checkbox" name="category" value="nuts" checked> Горіхи та сухофрукти</label>
+                    <label><input type="checkbox" name="category" value="sauces" checked> Соуси та пасти</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Матеріал паковання</legend>
+                    <label><input type="checkbox" name="material" value="paper" checked> Паперове</label>
+                    <label><input type="checkbox" name="material" value="glass" checked> Скляне</label>
+                    <label><input type="checkbox" name="material" value="plastic" checked> Пластикове</label>
+                </fieldset>
+            </form>
+        </aside>
+
+        <footer class="layout__footer">
+            <p>Полажинець Михайло, 2026</p>
+            <address>
+                м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
+            </address>
+        </footer>
+    </div>
+
+    <dialog id="details">
+        <h2>Вівсяні пластівці</h2>
+        <p>Ідентифікатор: HF-9321-UA</p>
+        <p>Склад: 100% цільнозернові вівсяні пластівці.</p>
+        <p>Харчова цінність на 100 г: 362 ккал.</p>
+        <p>Вага паковання: 400 г · Ціна: 70₴ · Пакування: паперовий пакет
+            (еко) · Алерген: глютен.</p>
+        <button id="closeDetails" type="button">Закрити</button>
+    </dialog>
+
+    <script>
+        const dlg = document.getElementById("details");
+        document.getElementById("openDetails").addEventListener("click", () => dlg.showModal());
+        document.getElementById("closeDetails").addEventListener("click", () => dlg.close());
+    </script>
 </body>
 
 </html>

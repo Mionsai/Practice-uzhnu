@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Підписка на щотижневий бокс — Чиста полиця</title>
     <link rel="icon" href="images/favicon.jpg">
 </head>
@@ -17,9 +18,10 @@
                 <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="index.html#store">Про проєкт</a></li>
                 <li><a href="index.html#alergic">Алергени</a></li>
-                <li><a href="form.html">Підписка</a></li>
+                <li><a href="form.html" class="current">Підписка</a></li>
                 <li><a href="about.html">Контакти</a></li>
             </ul>
+            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
         </nav>
     </header>
 
@@ -32,8 +34,9 @@
             підтвердженням підписки та датою першої доставки.
         </p>
 
-        <form action="/submit" method="post">
-            <!-- method="post": форма створює нову підписку, тому повторне надсилання по F5 немає відбуватися випадково, а персональні дані не повинні лишатися в URL -->
+        <form class="form-grid" action="/submit" method="post">
+            <!-- method="post": форма створює нову підписку, тому повторне надсилання
+                 по F5 не має відбуватися випадково, а персональні дані не повинні лишатися в URL -->
 
             <fieldset>
                 <legend>Дані користувача</legend>
@@ -51,6 +54,12 @@
                         placeholder="olena@example.com" autocomplete="email" required>
                 </p>
 
+                <!-- pattern="\+380[0-9]{9}"
+                     \+     — буквальний знак «плюс» (екранований, бо + у регулярці означає «один або більше»)
+                     380    — рівно символи 3, 8, 0 — код України
+                     [0-9]  — одна будь-яка цифра від 0 до 9
+                     {9}    — рівно дев'ять разів
+                     Разом: +380671234567 -->
                 <p>
                     <label for="phone">Телефон:</label>
                     <input type="tel" id="phone" name="phone"
@@ -65,11 +74,17 @@
                     <input type="date" id="delivery-date" name="delivery_date"
                         min="2026-09-01" max="2027-06-30" required>
                 </p>
+
+                <p>
+                    <label for="address">Адреса доставки:</label>
+                    <input type="text" id="address" name="address"
+                        placeholder="м. Ужгород, вул. Незалежності, 10, кв. 5"
+                        minlength="10" maxlength="120" required>
+                </p>
             </fieldset>
 
             <fieldset>
                 <legend>Параметри боксу</legend>
-
                 <p>
                     <label for="box-type">Тип боксу:</label>
                     <select id="box-type" name="box_type" required>
@@ -88,13 +103,13 @@
                 </p>
 
                 <fieldset>
-                    <legend>Розмір боксу</legend>
-                    <input type="radio" id="size-s" name="box_size" value="s">
-                    <label for="size-s">S — 5 продуктів</label>
-                    <input type="radio" id="size-m" name="box_size" value="m" checked>
-                    <label for="size-m">M — 8 продуктів</label>
-                    <input type="radio" id="size-l" name="box_size" value="l">
-                    <label for="size-l">L — 12 продуктів</label>
+                    <legend>Періодичність боксу</legend>
+                    <input type="radio" id="freq-weekly" name="box_frequency" value="weekly" checked>
+                    <label for="freq-weekly">Щотижня</label>
+                    <input type="radio" id="freq-biweekly" name="box_frequency" value="biweekly">
+                    <label for="freq-biweekly">Раз на два тижні</label>
+                    <input type="radio" id="freq-monthly" name="box_frequency" value="monthly">
+                    <label for="freq-monthly">Щомісяця</label>
                 </fieldset>
 
                 <fieldset>
@@ -107,12 +122,22 @@
                     <label for="no-lactose">Лактоза</label>
                 </fieldset>
 
+
+                <!-- pattern="HF-[0-9]{4}-UA"
+                     HF     — буквально великі латинські літери H і F (Healthy Food)
+                     -      — буквальний дефіс
+                     [0-9]  — одна будь-яка цифра від 0 до 9
+                     {4}    — рівно чотири рази
+                     -      — буквальний дефіс
+                     UA     — буквально великі латинські літери U і A
+                     Разом: HF-0782-UA -->
                 <p>
-                    <label for="product-code">Код улюбленого продукту:</label>
+                    <label for="product-code">Код стартового продукту:</label>
                     <input type="text" id="product-code" name="product_code"
                         placeholder="HF-0782-UA"
                         pattern="HF-[0-9]{4}-UA"
-                        title="Код продукту у форматі HF-0000-UA: літери HF, дефіс, чотири цифри, дефіс, літери UA, наприклад HF-0782-UA">
+                        title="Код продукту у форматі HF-0000-UA: літери HF, дефіс, чотири цифри, дефіс, літери UA, наприклад HF-0782-UA"
+                        required>
                 </p>
             </fieldset>
 
@@ -120,7 +145,7 @@
                 <legend>Додатково</legend>
 
                 <p>
-                    <label for="comment">Побажання до складу боксу:</label><br>
+                    <label for="comment">Побажання до складу боксу:</label>
                     <textarea id="comment" name="comment" rows="4" cols="50"
                         minlength="10" maxlength="500"
                         placeholder="Наприклад: менше солодкого, більше круп і бобових"></textarea>
