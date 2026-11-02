@@ -790,10 +790,28 @@ dialog {
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: 0 12px 28px rgb(0 0 0 / 35%);
+  /* [open] — атрибут, який showModal() сам вмикає на dialog; both тримає
+     стан кінцевого кадру (opacity:1, без зсуву) і до, і після програвання —
+     без нього вікно на мить мигнуло б у вихідному стані (прозоре,
+     зміщене вниз) ще до старту анімації */
+  animation: pop 280ms ease-out both;
 }
 
 dialog::backdrop {
   background: rgb(0 0 0 / 55%);
+  animation: fade 200ms ease-out both;
+}
+
+/* два окремі сценарії: тло з'являється швидше (200ms), сам блок —
+   трохи довше (280ms) і з рухом, тло не рухається, лише проявляється */
+@keyframes fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
 dialog h2 {
@@ -808,6 +826,32 @@ dialog button {
   padding: var(--space-xs) var(--space-md);
   font-weight: 700;
   cursor: pointer;
+}
+
+/* ===== Спінер завантаження (заготовка для LR10) =====
+   поки нічого не вмикає .loader в поточному сайті — hidden у розмітці
+   знімається лише тоді, коли дані справді почнуть вантажитись мережею */
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) 0;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid var(--color-surface);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  /* linear, а не ease: обертання по колу не має "розгону" й "гальмування" —
+     з ease коло б смикалося щооберту замість рівномірного руху */
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ===== Бонус: щільна галерея =====
@@ -868,3 +912,31 @@ dialog button {
 .card { margin-bottom: 24px; }
 .card + .card { margin-top: 16px; }
 */
+
+/* ===== Повага до prefers-reduced-motion =====
+   людям із вестибулярними порушеннями великий рух на екрані (зсуви,
+   масштабування, безкінечне обертання) може викликати нудоту й
+   запаморочення — reduce просить саме прибрати рух, а не вимкнути
+   анімації як такі: тому нижче тривалість зводиться до майже нуля
+   (анімація технічно відбувається й миттєво ставить кінцевий стан),
+   а не animation: none, яке лишило б елемент у ПОЧАТКОВОМУ кадрі
+   (наприклад, dialog лишився б прозорим). !important виправданий
+   тут тим, що це єдине місце в файлі, яке свідомо має перебити геть
+   усі власні transition/animation з усіх компонентів вище без
+   потреби дублювати виняток в кожному з них окремо */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* тонший виняток для картки: замість miттєвого "стрибка" transform
+     лишаємо спокійний, безпечний відгук — зміну фону */
+  .cards .card:hover,
+  .cards .card:focus-within {
+    transform: none;
+    background: var(--color-surface);
+  }
+}
