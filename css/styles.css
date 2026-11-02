@@ -219,9 +219,30 @@ body > footer,
 /*==== Картки каталогу: Grid замість inline-block ====*/
 .cards {
   display: grid;
+  /* auto-fit + minmax(var(--min-col), 1fr) з LR6 лишається незмінним —
+     кількістю колонок на кожному брейкпоінті керує саме значення
+     --min-col (перевизначене нижче в медіазапитах), а не
+     repeat(N, 1fr) */
   grid-template-columns: repeat(auto-fit, minmax(var(--min-col), 1fr));
   gap: var(--gap);
   padding-top: var(--space-sm);
+}
+
+/* ===== Адаптив (mobile-first) =====
+   база          — телефон,  ≤ 767px
+   min-width: 768px  — планшет, 768–1023px
+   min-width: 1024px — десктоп, ≥ 1024px
+*/
+@media (min-width: 768px) {
+  /* на планшеті в ряд влазило б 3 картки — піднімаємо поріг, щоб
+     лишалось рівно 2, як вимагає схема розкладки цього діапазону */
+  .cards { --min-col: 220px; }
+}
+
+@media (min-width: 1024px) {
+  /* на десктопі піднімаємо поріг ще раз, щоб на найширшому
+     перевіреному екрані (1440px) лишалось рівно 3 картки, а не 4 */
+  .cards { --min-col: 240px; }
 }
 
 .cards .card {
@@ -600,38 +621,28 @@ body {
 .layout { flex: 1; }
 main { flex: 1; }
 
-/* ===== Макет сторінки: grid-template-areas =====
-   header лишається поза .layout: липкий елемент "їздить" тільки в межах
-   свого контейнера, а грід-областю для header був би один короткий рядок —
-   їздити нема де, sticky перестав би прилипати */
+/* ===== Макет сторінки: grid-template-areas (mobile-first) =====
+   header лишається поза .layout на всіх трьох брейкпоінтах: липкий
+   елемент "їздить" тільки в межах свого контейнера, а грід-областю
+   для header був би один короткий рядок — їздити нема де, sticky
+   перестав би прилипати.
+   база (телефон) — одна колонка, порядок читання nav → main → side → foot,
+   той самий, що й у розмітці HTML: розкладка міняється лише
+   grid-template-areas/-columns, порядок елементів у DOM не чіпаємо */
 .layout {
   display: grid;
-  grid-template-columns: var(--sidebar) 1fr var(--sidebar);
-  grid-template-areas:
-    "nav  main side"
-    "foot foot foot";
-  /* рядок зон росте (1fr), рядок футера — по вмісту (auto); без цього
-     flex: 1 розтягнув би .layout, але foot лишився б одразу під вмістом */
-  grid-template-rows: 1fr auto;
   gap: var(--gap);
-  /* явно: грід-елементи розтягуються на всю висоту рядка (це й так
-     значення за замовчуванням, прописую для наочності) — тому
-     .layout__nav сам іде до низу, по висоті найвищої сусідньої зони */
-  align-items: stretch;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "nav"
+    "main"
+    "side"
+    "foot";
 }
 
 .layout__nav  { grid-area: nav; }
 .layout__main { grid-area: main; }
-.layout__aside {
-  grid-area: side;
-  /* бонус: липка бічна колонка — прокручується разом зі сторінкою,
-     зупиняється під шапкою */
-  position: sticky;
-  top: 5rem;
-  /* без align-self:start grid-елемент за замовчуванням розтягнутий на
-     всю висоту своєї області, і "їздити" йому нема де — sticky не спрацює */
-  align-self: start;
-}
+.layout__aside { grid-area: side; }
 .layout__footer { grid-area: foot; }
 
 .layout__nav,
@@ -640,6 +651,46 @@ main { flex: 1; }
   border: 1px solid var(--color-muted);
   border-radius: var(--radius);
   padding: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  /* планшет — дві зони: широкий nav-рядок зверху, main і side поруч */
+  .layout {
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas:
+      "nav  nav"
+      "main side"
+      "foot foot";
+  }
+}
+
+@media (min-width: 1024px) {
+  /* десктоп — повна схема з LR6: три колонки в один рядок зон */
+  .layout {
+    grid-template-columns: var(--sidebar) 1fr var(--sidebar);
+    grid-template-areas:
+      "nav  main side"
+      "foot foot foot";
+    /* рядок зон росте (1fr), рядок футера — по вмісту (auto); без цього
+       flex: 1 розтягнув би .layout, але foot лишився б одразу під вмістом */
+    grid-template-rows: 1fr auto;
+    /* явно: грід-елементи розтягуються на всю висоту рядка (це й так
+       значення за замовчуванням, прописую для наочності) — тому
+       .layout__nav сам іде до низу, по висоті найвищої сусідньої зони */
+    align-items: stretch;
+  }
+
+  .layout__aside {
+    /* бонус: липка бічна колонка — прокручується разом зі сторінкою,
+       зупиняється під шапкою. Вмикаємо лише на десктопі: на телефоні й
+       планшеті aside стоїть під основним вмістом, і "прилипати" йому
+       нема сенсу */
+    position: sticky;
+    top: 5rem;
+    /* без align-self:start грід-елемент за замовчуванням розтягнутий на
+       всю висоту своєї області, і "їздити" йому нема де — sticky не спрацює */
+    align-self: start;
+  }
 }
 
 /* ===== Модальне вікно <dialog> =====
@@ -699,21 +750,27 @@ dialog button {
 .gallery__item--tall { grid-row: span 2; }
 
 /* ===== Бонус: форма у дві колонки =====
-   display: contents прибирає коробку <p>, але лишає label/input у потоці —
-   вони стають прямими grid-дітьми fieldset і займають дві задані колонки.
-   Вкладені fieldset (радіо/чекбокси) і так не <p>, тому їх просто
-   розтягуємо на обидва треки, а їхній внутрішній вміст грід не чіпає */
-.form-grid fieldset {
-  display: grid;
-  grid-template-columns: var(--sidebar) 1fr;
-  gap: var(--space-sm) var(--gap);
-  align-items: center;
-}
+   на телефоні лейбл шириною 220px лишив би для самого поля замало
+   місця (чи й зовсім виштовхнув би форму за край екрана) — тому цей
+   бонус вмикається тільки з 768px, на вужчих екранах fieldset лишається
+   звичайним потоком (label над input, одна колонка) */
+@media (min-width: 768px) {
+  /* display: contents прибирає коробку <p>, але лишає label/input у потоці —
+     вони стають прямими grid-дітьми fieldset і займають дві задані колонки.
+     Вкладені fieldset (радіо/чекбокси) і так не <p>, тому їх просто
+     розтягуємо на обидва треки, а їхній внутрішній вміст грід не чіпає */
+  .form-grid fieldset {
+    display: grid;
+    grid-template-columns: var(--sidebar) 1fr;
+    gap: var(--space-sm) var(--gap);
+    align-items: center;
+  }
 
-.form-grid fieldset > p { display: contents; }
+  .form-grid fieldset > p { display: contents; }
 
-.form-grid fieldset > fieldset {
-  grid-column: 1 / -1;
+  .form-grid fieldset > fieldset {
+    grid-column: 1 / -1;
+  }
 }
 
 /* ===== Демонстрація: схлопування відступів =====
