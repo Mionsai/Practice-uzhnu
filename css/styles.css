@@ -22,6 +22,18 @@ img, video, iframe {
   /* еко-палітра: трав'яний зелений, світлий фон, коричневий крафт-колір
      для паковання, окремий червоний для попередження про алергени */
   --color-brand: hsl(100 40% 28%);   /* трав'яний зелений, темніший */
+  /* окремо від --color-brand: --color-brand ще й фон шапки/thead,
+     а --color-heading — лише текст заголовків і посилань нижче шапки.
+     У світлій темі значення однакові (нічого не змінюється), а в
+     темній --color-heading нижче перевизначений яскравішим */
+  --color-heading: hsl(100 40% 28%);
+  /* постійний світлий колір для тексту НА кольорових плашках (шапка,
+     банер, бейджі, кнопка «Замовити», thead) — фони цих плашок
+     (--color-brand/--color-accent/--color-craft/--color-allergen) самі
+     не змінюються між темами, тож і текст на них лишається світлим
+     завжди, а не "світлий у світлій темі / темний у темній", як було б
+     із тематичним --color-bg */
+  --color-on-brand: hsl(90 30% 97%);
   --color-accent: hsl(100 45% 40%);  /* трав'яний зелений, акцент */
   --color-bg: hsl(90 30% 97%);
   --color-surface: hsl(95 25% 92%);
@@ -69,7 +81,7 @@ body {
 h1, h2, h3 {
   font-family: var(--font-heading);
   line-height: 1.2;
-  color: var(--color-brand);
+  color: var(--color-heading);
 }
 
 h1 { font-size: 2.4rem; }
@@ -107,7 +119,7 @@ main {
   display: inline-block;
   padding: 0.1em 0.6em;
   border-radius: var(--radius);
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   font-weight: 700;
   font-size: 0.9em;
 }
@@ -149,30 +161,54 @@ body > header {
 }
 
 body > header h1 {
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   /* clamp замість фіксованого 1.6rem: на вузькому екрані шрифт трохи
      менший, тому назві сайту й кнопкам меню/теми легше влізти в один ряд */
   font-size: clamp(1.15rem, 1rem + 2vw, 1.6rem);
 }
 
-nav[aria-label="Головне меню"] {
+.nav {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
 }
 
-nav[aria-label="Головне меню"] ul {
-  display: flex;
-  gap: var(--space-sm);
+/* мобільна кнопка-гамбургер — сам <summary>, без жодного JS:
+   клік по ньому і так додає/прибирає атрибут open в <details> */
+.nav__toggle {
+  cursor: pointer;
+  color: var(--color-on-brand);
+  font-weight: 700;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.nav__toggle:focus-visible {
+  outline: 3px solid var(--color-on-brand);
+  outline-offset: -2px;
+}
+
+/* display тут навмисно не чіпаємо: <ul> і так блоковий елемент,
+   li стають під ним у стовпчик самі — а головне, щойно тут зʼявиться
+   свій display, він перекриє стандартне приховування вмісту закритого
+   <details>, і кнопка-гамбургер перестане щось ховати */
+.nav__list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-nav[aria-label="Головне меню"] a {
-  display: block;
+.nav__list a,
+/* a:visited із LVHFA-блоку нижче у файлі мав ту саму специфічність і
+   пізніший порядок — тому перемагав і фарбував відвідані пункти меню
+   в сірий (--color-muted) замість світлого кольору шапки */
+.nav__list a:visited {
+  display: flex;
+  align-items: center;
+  /* не менше 44px заввишки — мінімальна зона натискання пальцем */
+  min-height: 44px;
   padding: var(--space-sm) var(--space-md);
-  color: var(--color-bg);
+  box-sizing: border-box;
+  color: var(--color-on-brand);
   font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;
@@ -180,24 +216,38 @@ nav[aria-label="Головне меню"] a {
 }
 
 #themeToggle {
-  border: 1px solid var(--color-bg);
+  border: 1px solid var(--color-on-brand);
   border-radius: var(--radius);
   background: transparent;
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   padding: var(--space-xs) var(--space-sm);
   font-weight: 700;
   cursor: pointer;
 }
 
-nav[aria-label="Головне меню"] a:hover {
+.nav__list a:hover {
   background: var(--color-accent);
   color: var(--color-text);
 }
 
 /* клас current переїжджає на пункт активної сторінки в кожному html-файлі */
-nav[aria-label="Головне меню"] a.current {
+.nav__list a.current {
   background: var(--color-accent);
   color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .nav__toggle { display: none; }
+
+  /* селектор саме через details > .nav__list, а не просто .nav__list:
+     так специфічність перебиває стандартне display:none, яким
+     браузер ховає вміст закритого <details> — на планшеті/десктопі
+     список завжди горизонтальний рядок незалежно від атрибута open */
+  .nav details > .nav__list {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-sm);
+  }
 }
 
 nav[aria-label="Навігація по сторінці"] ul {
@@ -263,6 +313,25 @@ body > footer,
      притиснути до низу через margin-top: auto */
   display: flex;
   flex-direction: column;
+  /* transition стоїть тут, на базовому стані, а не всередині :hover —
+     інакше назад картка стрибала б миттєво замість плавного повернення */
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+/* :focus-within — картка реагує, коли клавіатурний фокус потрапив на
+   будь-що всередині неї (посилання «Замовити», кнопку «Швидкий перегляд»),
+   не лише на :hover курсором, якого на телефоні взагалі не існує */
+.cards .card:hover,
+.cards .card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgb(0 0 0 / 18%);
+}
+
+/* вкладений ефект: обкладинка трохи збільшується під час наведення
+   на всю картку, не тільки на саме зображення */
+.cards .card:hover .card__img,
+.cards .card:focus-within .card__img {
+  transform: scale(1.08);
 }
 
 /* картка "рекомендуємо" (бонус): виводиться першою в сітці через order,
@@ -281,6 +350,7 @@ body > footer,
   height: var(--card-img-h);
   object-fit: cover;
   object-position: center;
+  transition: transform 250ms ease;
 }
 
 .card__body {
@@ -310,13 +380,22 @@ body > footer,
   gap: var(--space-sm);
   padding: var(--space-md);
   padding-top: 0;
+  /* без цього flex за замовчуванням розтягує кнопки по висоті одна під
+     одну (align-items: stretch) — на картці з двома кнопками довший
+     текст «Швидкий перегляд» переноситься в 2 рядки й тягне «Замовити»
+     за собою, роблячи її вищою, ніж на картках з однією кнопкою */
+  align-items: flex-start;
 }
 
-.card__action {
+.card__action,
+/* :visited додано з тієї самої причини, що й для .nav__list a: глобальне
+   a:visited нижче у файлі мало ту саму специфічність і пізніший порядок
+   у файлі, тому перефарбовувало вже клікнуту кнопку в сірий */
+.card__action:visited {
   display: inline-block;
   padding: var(--space-xs) var(--space-sm);
   background: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-on-brand);
   text-decoration: none;
   font-weight: 700;
   border-radius: var(--radius);
@@ -326,7 +405,7 @@ body > footer,
 /* без цього global a:hover (колір --color-accent) зливається з тим
    самим --color-accent у фоні кнопки — текст ставав невидимим */
 .card__action:hover {
-  color: var(--color-bg);
+  color: var(--color-on-brand);
 }
 
 #openDetails {
@@ -353,7 +432,7 @@ body > footer,
   right: var(--space-sm);
   padding: var(--space-xs) var(--space-sm);
   background: var(--color-craft);
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   font-size: 0.8rem;
   border-radius: 999px;
 }
@@ -389,7 +468,7 @@ th, td {
 
 thead th {
   background: var(--color-brand);
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   text-align: left;
 }
 
@@ -435,7 +514,7 @@ fieldset {
 
 legend {
   font-family: var(--font-heading);
-  color: var(--color-brand);
+  color: var(--color-heading);
   padding-inline: var(--space-sm);
 }
 
@@ -524,7 +603,7 @@ details:last-child {
 /* :checked — підпис вибраного розміру боксу жирним і фірмовим кольором */
 input[type="radio"]:checked + label {
   font-weight: 700;
-  color: var(--color-brand);
+  color: var(--color-heading);
 }
 
 /* ::marker — колір і розмір маркерів списку порад */
@@ -538,12 +617,12 @@ aside li::marker {
 #store + p::first-letter {
   font-family: var(--font-heading);
   font-size: 2em;
-  color: var(--color-brand);
+  color: var(--color-heading);
 }
 
 /* нащадок — усі <a> всередині <main>, на будь-якій глибині */
 main a {
-  color: var(--color-brand);
+  color: var(--color-heading);
 }
 
 
@@ -562,7 +641,7 @@ a[href$=".pdf"]::after {
 
 /* LVHFA: однакова специфічність у всіх чотирьох, тому порядок у файлі
    вирішує, хто переможе — пізніше правило перебиває раніше */
-a:link { color: var(--color-brand); }
+a:link { color: var(--color-heading); }
 a:visited { color: var(--color-muted); }
 a:hover { color: var(--color-accent); }
 a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
@@ -574,7 +653,7 @@ a:active { color: var(--color-text); }
    #promo h3 — (1,0,1)  перемагає — id не наздогнати жодною кількістю класів */
 /* h3       { color: var(--color-text); } */
 /* .card h3 { color: var(--color-muted); } */
-#promo h3 { color: var(--color-brand); }
+#promo h3 { color: var(--color-heading); }
 
 /* inline-стиль переміг би все вище — специфічність інлайну вища за id,
    але тоді колір довелося б міняти прямо в розмітці, а не в одному файлі */
@@ -587,6 +666,11 @@ body.dark-theme {
   --color-text: hsl(90 25% 92%);
   --color-muted: hsl(100 8% 60%);
   --color-hover: hsl(100 25% 20%);
+  /* --color-brand НЕ перевизначаю: ним пофарбований фон шапки
+     (body > header) і фон thead — зміна цього кольору тут підсвітила б
+     і шапку теж. --color-heading — окрема змінна лише для тексту
+     заголовків/посилань нижче шапки (дивись її оголошення в :root) */
+  --color-heading: hsl(100 55% 72%);
 }
 
 /* Банер  */
@@ -595,7 +679,7 @@ body.dark-theme {
   margin: 0 auto var(--space-lg);
   padding: var(--space-lg);
   border-radius: var(--radius);
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   background-image: linear-gradient(120deg, var(--color-brand), var(--color-accent));
   /* світлий кінець градієнта сам по собі не дуже темний —
      тінь під текстом тримає контраст по всій довжині банера, а не тільки
@@ -604,7 +688,7 @@ body.dark-theme {
 }
 
 .banner h2 {
-  color: var(--color-bg);
+  color: var(--color-on-brand);
   margin-top: 0;
 }
 
