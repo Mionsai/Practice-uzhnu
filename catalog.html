@@ -12,17 +12,20 @@
 <body>
     <header>
         <h1 id="top">Чиста полиця</h1>
-        <nav aria-label="Головне меню">
-            <ul>
-                <li><a href="index.html">Головна</a></li>
-                <li><a href="catalog.html" class="current">Каталог</a></li>
-                <li><a href="index.html#store">Про проєкт</a></li>
-                <li><a href="index.html#alergic">Алергени</a></li>
-                <li><a href="form.html">Підписка</a></li>
-                <li><a href="about.html">Контакти</a></li>
-            </ul>
-            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
+        <nav class="nav" aria-label="Головне меню">
+            <details open>
+                <summary class="nav__toggle">☰ Меню</summary>
+                <ul class="nav__list">
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="catalog.html" class="current">Каталог</a></li>
+                    <li><a href="index.html#store">Про проєкт</a></li>
+                    <li><a href="index.html#alergic">Алергени</a></li>
+                    <li><a href="form.html">Підписка</a></li>
+                    <li><a href="about.html">Контакти</a></li>
+                </ul>
+            </details>
         </nav>
+        <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
     </header>
 
     <div class="layout">
@@ -67,9 +70,13 @@
 
         <section class="catalog" id="catalog-cards">
             <h2>Каталог</h2>
+            <div class="loader" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Завантажуємо каталог…</p>
+            </div>
             <div class="cards">
                 <article class="card">
-                    <span class="card__badge">Еко</span>
+                    <span class="card__badge card__badge--eco">Еко</span>
                     <img class="card__img" src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці">
                     <div class="card__body">
                         <h3 class="card__title">Вівсяні пластівці</h3>
@@ -107,7 +114,7 @@
                 </article>
 
                 <article class="card">
-                    <span class="card__badge">Еко</span>
+                    <span class="card__badge card__badge--eco">Еко</span>
                     <img class="card__img" src="images/hummus.jpg" alt="Хумус класичний у скляній банці з оливковою олією зверху">
                     <div class="card__body">
                         <h3 class="card__title">Хумус класичний домашній без консервантів і підсилювачів смаку</h3>
@@ -220,6 +227,7 @@
 
         <section id="products-table">
             <h2>Товари в наявності</h2>
+            <div class="table-wrap">
             <table>
                 <caption>Калорійність і вага паковання товарів</caption>
                 <thead>
@@ -233,40 +241,41 @@
                 <tbody>
                     <tr>
                         <th scope="row">Вівсяні пластівці</th>
-                        <td rowspan="2">Крупи та пластівці</td>
-                        <td>362</td>
-                        <td>400</td>
+                        <td rowspan="2" data-label="Категорія">Крупи та пластівці</td>
+                        <td data-label="Калорійність, ккал/100 г">362</td>
+                        <td data-label="Вага паковання, г">400</td>
                     </tr>
                     <tr>
                         <th scope="row">Гречка зелена</th>
-                        <td>343</td>
-                        <td>900</td>
+                        <td data-label="Калорійність, ккал/100 г">343</td>
+                        <td data-label="Вага паковання, г">900</td>
                     </tr>
                     <tr>
                         <th scope="row">Мікс горіхів</th>
-                        <td rowspan="2">Горіхи та сухофрукти</td>
-                        <td>607</td>
-                        <td>250</td>
+                        <td rowspan="2" data-label="Категорія">Горіхи та сухофрукти</td>
+                        <td data-label="Калорійність, ккал/100 г">607</td>
+                        <td data-label="Вага паковання, г">250</td>
                     </tr>
                     <tr>
                         <th scope="row">Мигдаль несмажений</th>
-                        <td>579</td>
-                        <td>300</td>
+                        <td data-label="Калорійність, ккал/100 г">579</td>
+                        <td data-label="Вага паковання, г">300</td>
                     </tr>
                     <tr>
                         <th scope="row">Хумус класичний</th>
-                        <td>Соуси та пасти</td>
-                        <td>166</td>
-                        <td>350</td>
+                        <td data-label="Категорія">Соуси та пасти</td>
+                        <td data-label="Калорійність, ккал/100 г">166</td>
+                        <td data-label="Вага паковання, г">350</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th scope="row" colspan="3">Разом (5 позицій), сумарна вага пакувань</th>
-                        <td>2200</td>
+                        <td data-label="Сумарна вага, г">2200</td>
                     </tr>
                 </tfoot>
             </table>
+            </div>
             <p><a href="#top">Нагору</a></p>
         </section>
 

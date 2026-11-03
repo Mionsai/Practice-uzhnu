@@ -13,17 +13,20 @@
     <header>
         <h1 id="top">Чиста полиця</h1>
         <!-- Навігація -->
-        <nav aria-label="Головне меню">
-            <ul>
-                <li><a href="index.html" class="current">Головна</a></li>
-                <li><a href="catalog.html">Каталог</a></li>
-                <li><a href="index.html#store">Про проєкт</a></li>
-                <li><a href="index.html#alergic">Алергени</a></li>
-                <li><a href="form.html">Підписка</a></li>
-                <li><a href="about.html">Контакти</a></li>
-            </ul>
-            <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
+        <nav class="nav" aria-label="Головне меню">
+            <details open>
+                <summary class="nav__toggle">☰ Меню</summary>
+                <ul class="nav__list">
+                    <li><a href="index.html" class="current">Головна</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="index.html#store">Про проєкт</a></li>
+                    <li><a href="index.html#alergic">Алергени</a></li>
+                    <li><a href="form.html">Підписка</a></li>
+                    <li><a href="about.html">Контакти</a></li>
+                </ul>
+            </details>
         </nav>
+        <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
     </header>
 
     <div class="layout">

@@ -165,12 +165,19 @@ body > header h1 {
   /* clamp замість фіксованого 1.6rem: на вузькому екрані шрифт трохи
      менший, тому назві сайту й кнопкам меню/теми легше влізти в один ряд */
   font-size: clamp(1.15rem, 1rem + 2vw, 1.6rem);
+  /* на телефоні заголовок, кнопка «Тема» й <nav> (гамбургер) —
+     3 flex-дитини body > header; без order вони йшли б у порядку DOM
+     (h1, nav, button), і «Тема» опинялась би в одному рядку з
+     гамбургером, а не із заголовком. order нижче ставить «Тема»
+     одразу за заголовком, а <nav> переносить на рядок нижче */
+  order: 1;
 }
 
 .nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  /* .nav — тепер лише обгортка над <details>, кнопка «Тема» винесена
+     прямою дитиною body > header (щоб керувати її позицією через
+     order, не прив'язуючись до висоти розгорнутого меню) */
+  order: 3;
 }
 
 /* мобільна кнопка-гамбургер — сам <summary>, без жодного JS:
@@ -179,7 +186,11 @@ body > header h1 {
   cursor: pointer;
   color: var(--color-on-brand);
   font-weight: 700;
-  padding: var(--space-sm) var(--space-md);
+  /* кнопка видима лише на телефоні (з 768px гамбургер ховається),
+     тому розмір тут одразу компактний — окремо під планшет/десктоп
+     підганяти не треба */
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.9rem;
 }
 
 .nav__toggle:focus-visible {
@@ -198,9 +209,11 @@ body > header h1 {
 }
 
 .nav__list a,
-/* a:visited із LVHFA-блоку нижче у файлі мав ту саму специфічність і
-   пізніший порядок — тому перемагав і фарбував відвідані пункти меню
-   в сірий (--color-muted) замість світлого кольору шапки */
+/* a:link і a:visited із LVHFA-блоку нижче у файлі мали ту саму
+   специфічність і пізніший порядок — тому перемагали й фарбували ще
+   не відвідані пункти меню в зелений (--color-heading), а відвідані —
+   в сірий (--color-muted), замість світлого кольору шапки в обох випадках */
+.nav__list a:link,
 .nav__list a:visited {
   display: flex;
   align-items: center;
@@ -220,8 +233,13 @@ body > header h1 {
   border-radius: var(--radius);
   background: transparent;
   color: var(--color-on-brand);
-  padding: var(--space-xs) var(--space-sm);
+  /* на телефоні компактніше (менший padding і шрифт), щоб лишалось
+     більше місця для назви сайту й гамбургера в одному рядку —
+     з 768px повертаємо звичний розмір */
+  padding: 0.2rem var(--space-xs);
+  font-size: 0.85rem;
   font-weight: 700;
+  order: 2;
   cursor: pointer;
 }
 
@@ -239,14 +257,48 @@ body > header h1 {
 @media (min-width: 768px) {
   .nav__toggle { display: none; }
 
+  /* з 768px повертаємо природний порядок DOM: заголовок, меню,
+     «Тема» в кінці рядка — той порядок, що на мобільному order
+     міняв навмисно, щоб «Тема» була поруч із заголовком */
+  .nav { order: 2; }
+  #themeToggle { order: 3; }
+
+  /* на планшеті 6 пунктів меню + кнопка «Тема» в один рядок — тісно,
+     тому тут компактніше (менший padding/шрифт), ніж на мобільному
+     гамбургері чи на просторому десктопі (повертаємо нижче, 1024px) */
+  .nav__list a {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    min-height: 36px;
+  }
+
+  #themeToggle {
+    padding: 0.3rem var(--space-xs);
+    font-size: 0.85rem;
+  }
+
   /* селектор саме через details > .nav__list, а не просто .nav__list:
      так специфічність перебиває стандартне display:none, яким
      браузер ховає вміст закритого <details> — на планшеті/десктопі
-     список завжди горизонтальний рядок незалежно від атрибута open */
+     список завжди горизонтальний рядок незалежно від атрибута open.
+     content-visibility окремо від display: якщо закрити меню на
+     телефоні (прибрати open) і потім розширити вікно, браузер ховає
+     вміст закритого <details> ще й через content-visibility:hidden —
+     саме display:flex тут не вистачає, список лишався невидимим */
+  /* display:contents прибирає власний "бокс" <details> — браузер
+     перестає застосовувати до нього спеціальну логіку
+     показу/приховування вмісту залежно від open, і summary/ul просто
+     стають звичайними flex-дітьми .nav зі своїм display нижче */
+  .nav details {
+    display: contents;
+  }
+
   .nav details > .nav__list {
-    display: flex;
+    display: flex !important;
     flex-direction: row;
     gap: var(--space-sm);
+    content-visibility: visible !important;
   }
 }
 
@@ -290,9 +342,26 @@ body > footer,
 }
 
 @media (min-width: 1024px) {
-  /* на десктопі піднімаємо поріг ще раз, щоб на найширшому
-     перевіреному екрані (1440px) лишалось рівно 3 картки, а не 4 */
-  .cards { --min-col: 240px; }
+  /* на десктопі повертаємо поріг ближче до базового LR6 (200px):
+     за легендою варіанта сітка продуктів 4 → 2 → 1, тож на найширшому
+     перевіреному екрані (1440px) має лишатись рівно 4 картки */
+  .cards { --min-col: 200px; }
+}
+
+@media (min-width: 1024px) {
+  /* на десктопі місця вдосталь — повертаємо звичний, просторіший
+     розмір пунктів меню й кнопки «Тема» (на планшеті вони стиснуті) */
+  .nav__list a {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    min-height: 44px;
+  }
+
+  #themeToggle {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 1rem;
+  }
 }
 
 .cards .card {
@@ -388,9 +457,11 @@ body > footer,
 }
 
 .card__action,
-/* :visited додано з тієї самої причини, що й для .nav__list a: глобальне
-   a:visited нижче у файлі мало ту саму специфічність і пізніший порядок
-   у файлі, тому перефарбовувало вже клікнуту кнопку в сірий */
+/* :link і :visited додані з тієї самої причини, що й для .nav__list a:
+   глобальні a:link/a:visited нижче у файлі мали ту саму специфічність
+   і пізніший порядок, тому перефарбовували кнопку в зелений
+   (--color-heading, зливався з фоном) чи сірий (відвідану) */
+.card__action:link,
 .card__action:visited {
   display: inline-block;
   padding: var(--space-xs) var(--space-sm);
@@ -437,6 +508,17 @@ body > footer,
   border-radius: 999px;
 }
 
+/* за легендою варіанта мітка «Еко» плавно пульсує — лише вона,
+   не "Рекомендуємо" (та сама .card__badge, інша модифікація) */
+.card__badge--eco {
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.08); }
+}
+
 
 
 /* Таблиця каталогу */
@@ -444,6 +526,123 @@ body > footer,
    втрати читабельності — прокручуємо вбік саму таблицю, а не всю сторінку */
 .table-wrap {
   overflow-x: auto;
+}
+
+/* ===== Таблиця → список на мобільному (mobile-first) =====
+   база (телефон): кожен <tr> стає окремою карткою-блоком, <thead>
+   ховається для очей (але лишається для скрінрідера — sr-only-прийом,
+   не display:none), а назву колонки перед значенням підставляє
+   ::before з атрибута data-label. rowspan не можна відтворити в
+   блоковому режимі: другий рядок пари (Гречка зелена, Мигдаль
+   несмажений) у списку лишається без категорії — вона в DOM лише
+   в першому рядку пари, так само, як і в табличному вигляді */
+.table-wrap table,
+.table-wrap thead,
+.table-wrap tbody,
+.table-wrap tfoot,
+.table-wrap tr,
+.table-wrap th,
+.table-wrap td {
+  display: block;
+}
+
+.table-wrap thead tr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table-wrap tbody tr {
+  margin-bottom: var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+}
+
+.table-wrap tbody th[scope="row"] {
+  display: block;
+  border-bottom: 1px solid var(--color-muted);
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+}
+
+.table-wrap td {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  border: none;
+  padding: var(--space-xs) 0;
+}
+
+.table-wrap td[data-label]::before {
+  content: attr(data-label) ":";
+  font-weight: 700;
+  color: var(--color-muted);
+  text-align: left;
+}
+
+.table-wrap tfoot th {
+  display: block;
+  border-top: 1px solid var(--color-muted);
+  padding-top: var(--space-sm);
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  /* з 768px повертаємо звичайну табличну розкладку — ширини вистачає,
+     список більше не потрібен */
+  .table-wrap table,
+  .table-wrap thead,
+  .table-wrap tbody,
+  .table-wrap tfoot,
+  .table-wrap tr,
+  .table-wrap th,
+  .table-wrap td {
+    display: revert;
+  }
+
+  .table-wrap thead tr {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+
+  .table-wrap tbody tr {
+    margin-bottom: 0;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .table-wrap tbody th[scope="row"] {
+    display: table-cell;
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: var(--space-sm);
+  }
+
+  .table-wrap td {
+    display: table-cell;
+    justify-content: normal;
+    border: 1px solid var(--color-muted);
+    padding: var(--space-sm);
+  }
+
+  .table-wrap td[data-label]::before {
+    content: none;
+  }
+
+  .table-wrap tfoot th {
+    display: table-cell;
+    border-top: none;
+    padding-top: var(--space-sm);
+  }
 }
 
 table {
