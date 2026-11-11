@@ -1,8 +1,5 @@
 "use strict";
 
-// Тимчасово: перевірка, що скрипт підключився (прибрати в кінці роботи).
-console.log("app.js підключено");
-
 // Дані варіанта «Продукти здорового харчування».
 // const тримає саме посилання на масив, а не його вміст — тому push,
 // який міняє вміст, працює; заборонено лише переприсвоїти сам products.
@@ -125,6 +122,22 @@ const sortByCalories = (items) => [...items].sort((a, b) => a.calories - b.calor
 // Сортує копію за назвою в українській абетці.
 const sortByName = (items) => [...items].sort((a, b) => a.title.localeCompare(b.title, "uk"));
 
+// Приймає масив продуктів, повертає об'єкт зі статистикою добірки.
+function statsForItems(items) {
+    // Початкове 0 — щоб сума стартувала з числа; без нього перший продукт
+    // став би акумулятором і до калорій додався б цілий об'єкт.
+    const total = items.reduce((sum, p) => sum + p.calories, 0);
+    // max через reduce: тримаємо найбілковіший запис, порівнюючи з поточним.
+    const max = items.reduce((best, p) => (p.protein > best.protein ? p : best));
+    return {
+        count: items.length,
+        total,
+        average: (total / items.length).toFixed(1),
+        max,
+        categories: new Set(items.map((p) => p.category)).size,
+    };
+}
+
 
 // === Вивід на сторінку ===
 
@@ -162,4 +175,14 @@ show("out-sorted", [
     sortByName(products).map((p) => " • " + p.title).join("\n"),
     "Вихідний порядок (не зіпсований сортуванням):",
     products.map((p) => " • " + p.title).join("\n"),
+]);
+
+// Статистика: виводимо поля об'єкта окремими рядками, а не сам об'єкт
+const stats = statsForItems(products);
+show("out-stats", [
+    `Усього продуктів: ${stats.count}`,
+    `Сумарна калорійність: ${stats.total} ккал`,
+    `Середня калорійність: ${stats.average} ккал`,
+    `Найбільш білковий: ${stats.max.title} (${stats.max.protein} г білка на 100 г)`,
+    `Різних категорій: ${stats.categories}`,
 ]);
