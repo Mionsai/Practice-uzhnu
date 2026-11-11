@@ -1139,3 +1139,14 @@ dialog button {
     background: var(--color-surface);
   }
 }
+
+/* Блок виводу JS (LR8). pre-line лишає переноси \n у textContent і склеює
+   зайві пробіли; без нього весь список зліпився б в один рядок. */
+.js-out {
+  white-space: pre-line;
+  font-family: ui-monospace, monospace;
+  background: var(--color-surface);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  line-height: 1.7;
+}

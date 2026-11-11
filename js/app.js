@@ -68,3 +68,35 @@ const products = [
         tags: ["безглютенове", "повноцінний білок", "залізо"],
     },
 ];
+
+
+// === Допоміжні функції ===
+
+// Записує текст у елемент за id. Масив рядків склеює переносами.
+const show = (id, value) => {
+    const box = document.getElementById(id);
+    if (box === null) {
+        console.error("Немає елемента з id:", id);
+        return;
+    }
+    box.textContent = Array.isArray(value) ? value.join("\n") : value;
+};
+
+
+// === Обробка даних ===
+
+// Приймає масив продуктів, повертає масив готових рядків «№. назва — …».
+function numberedList(items) {
+    const lines = [];
+    for (let i = 0; i < items.length; i++) {
+        const p = items[i];
+        lines.push(`${i + 1}. ${p.title} — ${p.category}, ${p.calories} ккал (${p.origin.country}, ${p.origin.producer})`);
+    }
+    return lines;
+}
+
+
+// === Вивід на сторінку ===
+
+show("out-count", `Продуктів у каталозі: ${products.length}`);
+show("out-numbered", numberedList(products));
