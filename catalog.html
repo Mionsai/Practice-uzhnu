@@ -71,6 +71,9 @@
 
         <section class="catalog" id="catalog-cards">
             <h2>Каталог</h2>
+            <!-- лічильник заповнює app.js після рендера; aria-live озвучує
+                 зміну кількості під час пошуку/фільтрації -->
+            <p class="catalog-count" id="catalog-count" aria-live="polite"></p>
             <div class="loader" hidden>
                 <div class="spinner" aria-hidden="true"></div>
                 <p>Завантажуємо каталог…</p>
@@ -352,21 +355,14 @@
         </footer>
     </div>
 
+    <!-- Порожній діалог «швидкого перегляду»: заголовок і тіло заповнює
+         app.js з даних продукту, по якому клікнули (делегування в .cards).
+         #details-body має white-space: pre-line, тож переноси \n зберігаються. -->
     <dialog id="details">
-        <h2>Вівсяні пластівці</h2>
-        <p>Ідентифікатор: HF-9321-UA</p>
-        <p>Склад: 100% цільнозернові вівсяні пластівці.</p>
-        <p>Харчова цінність на 100 г: 362 ккал.</p>
-        <p>Вага паковання: 400 г · Ціна: 70₴ · Пакування: паперовий пакет
-            (еко) · Алерген: глютен.</p>
+        <h2 id="details-title">Деталі товару</h2>
+        <p id="details-body"></p>
         <button id="closeDetails" type="button">Закрити</button>
     </dialog>
-
-    <script>
-        const dlg = document.getElementById("details");
-        document.getElementById("openDetails").addEventListener("click", () => dlg.showModal());
-        document.getElementById("closeDetails").addEventListener("click", () => dlg.close());
-    </script>
 </body>
 
 </html>

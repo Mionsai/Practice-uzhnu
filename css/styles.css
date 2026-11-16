@@ -1150,3 +1150,36 @@ dialog button {
   border-radius: var(--radius);
   line-height: 1.7;
 }
+
+/* ===== Тема 9: інтерактив каталогу ===== */
+
+/* рядок «Показано: N із M» під заголовком каталогу */
+.catalog-count {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0 0 var(--space-sm);
+}
+
+/* порожня видача, коли пошук/фільтр нічого не лишили */
+.cards__empty {
+  color: var(--color-muted);
+  padding: var(--space-md) 0;
+}
+
+/* кнопка «Швидкий перегляд» тепер на кожній картці (її малює JS),
+   тож той самий вигляд, що мав раніше статичний #openDetails */
+.card__more {
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* тіло діалогу складається з кількох рядків через \n — зберігаємо переноси */
+#details-body {
+  white-space: pre-line;
+  line-height: 1.6;
+}
