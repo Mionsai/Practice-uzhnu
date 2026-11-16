@@ -1038,6 +1038,13 @@ dialog button {
   padding: var(--space-lg) 0;
 }
 
+/* .loader{display:flex} має ту саму специфічність, що й UA-правило
+   [hidden]{display:none}, і як авторський стиль перемагає його — через це
+   спінер висів поверх каталогу попри hidden. Повертаємо приховування. */
+.loader[hidden] {
+  display: none;
+}
+
 .spinner {
   width: 48px;
   height: 48px;
