@@ -1205,3 +1205,41 @@ dialog button {
   border-radius: var(--radius);
   padding: var(--space-sm);
 }
+
+/* ===== Тема 9: валідація форми підписки ===== */
+
+/* підсвітка невалідного поля та текст помилки під ним (ставить app.js) */
+[aria-invalid="true"] {
+  border-color: var(--color-allergen);
+  outline-color: var(--color-allergen);
+}
+
+.field-error {
+  display: block;
+  margin-top: var(--space-xs);
+  color: var(--color-allergen);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* підсумковий банер форми: помилка — червоний, успіх — зелений акцент */
+.form-status {
+  margin: var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+
+.form-status:empty {
+  display: none;             /* порожній банер не займає місця */
+}
+
+.form-status--error {
+  background: var(--color-allergen);
+  color: var(--color-on-brand);
+}
+
+.form-status--ok {
+  background: var(--color-accent);
+  color: var(--color-on-brand);
+}

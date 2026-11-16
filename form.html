@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <title>Підписка на щотижневий бокс — Чиста полиця</title>
     <link rel="icon" href="images/favicon.jpg">
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
@@ -159,6 +160,10 @@
                     <label for="agree">Я погоджуюся з умовами підписки та обробкою персональних даних</label>
                 </p>
             </fieldset>
+
+            <!-- Підсумок валідації від app.js: помилка або успіх. role="status"
+                 + aria-live озвучує текст, щойно він з'являється. -->
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
 
             <p>
                 <button type="submit">Оформити підписку</button>

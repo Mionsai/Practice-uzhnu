@@ -435,3 +435,101 @@ if (cardsBox !== null) {
     // вже «живими». Без JS у розмітці лишаються статичні — сторінка робоча.
     update();
 }
+
+
+// === Валідація форми підписки (LR9) ===
+// Прив'язка до самої форми: блок працює лише на form.html.
+const subscribeForm = document.querySelector(".form-grid");
+if (subscribeForm !== null) {
+    // Вимикаємо нативні підказки-«бульбашки» й беремо валідацію на себе.
+    // noValidate ставимо з JS: без скрипта залишається звичайна HTML5-перевірка.
+    subscribeForm.noValidate = true;
+
+    const status = document.getElementById("form-status");
+
+    // Людяніші повідомлення під конкретні поля; якщо тут нема — беремо
+    // стандартний текст браузера (validationMessage).
+    const messages = {
+        fullname: "Вкажіть прізвище та ім'я (щонайменше 2 символи).",
+        email: "Введіть коректну електронну пошту, напр. olena@example.com.",
+        phone: "Телефон у форматі +380XXXXXXXXX (+ і 12 цифр).",
+        delivery_date: "Оберіть дату доставки в межах навчального року.",
+        address: "Адреса доставки — щонайменше 10 символів.",
+        box_type: "Оберіть тип боксу.",
+        persons: "Кількість осіб — від 1 до 5.",
+        product_code: "Код у форматі HF-0000-UA.",
+        agree: "Потрібна згода з умовами підписки.",
+    };
+
+    // Показує або ховає повідомлення про помилку під полем.
+    function setError(field, text) {
+        // шукаємо вже створений вузол помилки поруч; немає — створюємо
+        let box = field.parentElement.querySelector(".field-error");
+        if (text === "") {
+            field.removeAttribute("aria-invalid");
+            if (box !== null) {
+                box.remove();
+            }
+            return;
+        }
+        if (box === null) {
+            box = document.createElement("span");
+            box.className = "field-error";
+            field.parentElement.append(box);
+        }
+        field.setAttribute("aria-invalid", "true");
+        box.textContent = text;
+    }
+
+    // Перевіряє одне поле через Constraint Validation API, домальовує текст.
+    function validateField(field) {
+        if (field.validity.valid) {
+            setError(field, "");
+            return true;
+        }
+        setError(field, messages[field.name] ?? field.validationMessage);
+        return false;
+    }
+
+    // Поки користувач править поле — прибираємо помилку, щойно воно стало
+    // валідним, щоб підказка не «висіла» після виправлення.
+    subscribeForm.addEventListener("input", (event) => {
+        const field = event.target;
+        if (field.willValidate && field.validity.valid) {
+            setError(field, "");
+        }
+    });
+
+    subscribeForm.addEventListener("submit", (event) => {
+        event.preventDefault();         // бекенду немає — обробляємо самі
+
+        let firstInvalid = null;
+        // перевіряємо всі поля, що беруть участь у валідації
+        for (const field of subscribeForm.elements) {
+            if (!field.willValidate) {
+                continue;
+            }
+            if (!validateField(field) && firstInvalid === null) {
+                firstInvalid = field;
+            }
+        }
+
+        if (firstInvalid !== null) {
+            if (status !== null) {
+                status.textContent = "Перевірте підсвічені поля — форму не надіслано.";
+                status.className = "form-status form-status--error";
+            }
+            firstInvalid.focus();       // одразу ведемо до першої помилки
+            return;
+        }
+
+        // Усе валідне: імітуємо успішне оформлення.
+        const email = subscribeForm.elements.email.value;
+        if (status !== null) {
+            status.textContent = `Дякуємо! Підписку оформлено, лист із підтвердженням надіслано на ${email}.`;
+            status.className = "form-status form-status--ok";
+            status.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        subscribeForm.reset();
+    });
+}
