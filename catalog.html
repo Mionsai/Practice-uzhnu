@@ -329,20 +329,21 @@
 
         <aside class="layout__aside">
             <h2>Фільтр</h2>
-            <!-- статичний фільтр: без JS він нічого не приховує,
-                 але розмітка й стилі вже готові під тему 9 -->
-            <form>
+            <!-- Живий фільтр теми 9: пошук і виключення алергенів обробляє
+                 app.js. role="search" + novalidate — форма нічого не
+                 надсилає, лише керує видимістю карток через JS. -->
+            <form class="catalog-tools" role="search" novalidate>
+                <p>
+                    <label for="search">Пошук за назвою або складом:</label>
+                    <input type="search" id="search" name="search"
+                        placeholder="напр. кіноа або кунжут" autocomplete="off">
+                </p>
                 <fieldset>
-                    <legend>Категорія</legend>
-                    <label><input type="checkbox" name="category" value="cereals" checked> Крупи та пластівці</label>
-                    <label><input type="checkbox" name="category" value="nuts" checked> Горіхи та сухофрукти</label>
-                    <label><input type="checkbox" name="category" value="sauces" checked> Соуси та пасти</label>
-                </fieldset>
-                <fieldset>
-                    <legend>Матеріал паковання</legend>
-                    <label><input type="checkbox" name="material" value="paper" checked> Паперове</label>
-                    <label><input type="checkbox" name="material" value="glass" checked> Скляне</label>
-                    <label><input type="checkbox" name="material" value="plastic" checked> Пластикове</label>
+                    <legend>Виключити алерген</legend>
+                    <label><input type="checkbox" name="exclude" value="горіхи"> Горіхи</label>
+                    <label><input type="checkbox" name="exclude" value="кунжут"> Кунжут</label>
+                    <label><input type="checkbox" name="exclude" value="глютен"> Глютен</label>
+                    <label><input type="checkbox" name="exclude" value="діоксид сірки"> Діоксид сірки</label>
                 </fieldset>
             </form>
         </aside>

@@ -280,11 +280,13 @@ if (document.getElementById("out-count") !== null) {
 }
 
 
-// === Каталог: рендер карток із даних (LR9) ===
-// Блок прив'язаний до контейнера карток; якщо його немає (інші сторінки) —
-// нічого не чіпаємо.
+// === Каталог: рендер, пошук, фільтр, делегування (LR9) ===
+// Весь блок прив'язаний до контейнера карток; якщо його немає (інші
+// сторінки) — нічого не чіпаємо.
 const cardsBox = document.querySelector(".cards");
 if (cardsBox !== null) {
+    const searchInput = document.getElementById("search");
+    const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
     const countOut = document.getElementById("catalog-count");
 
     const dialog = document.getElementById("details");
@@ -369,6 +371,24 @@ if (cardsBox !== null) {
         }
     }
 
+    // Зводить разом пошук і виключення алергенів — одне джерело істини
+    // про те, які картки видно.
+    function visibleProducts() {
+        const query = (searchInput?.value ?? "").trim().toLowerCase();
+        const excluded = allergenBoxes.filter((b) => b.checked).map((b) => b.value);
+
+        return products.filter((p) => {
+            // пошук за назвою АБО будь-яким інгредієнтом складу
+            const haystack = [p.title, ...p.ingredients].join(" ").toLowerCase();
+            const matchesQuery = query === "" || haystack.includes(query);
+            // лишаємо продукт, лише якщо він не містить жодного виключеного алергену
+            const hasExcluded = p.allergens.some((a) => excluded.includes(a));
+            return matchesQuery && !hasExcluded;
+        });
+    }
+
+    const update = () => render(visibleProducts());
+
     // Відкриває діалог «швидкого перегляду», заповнюючи його з даних продукту.
     function openDetails(id) {
         const product = products.find((p) => p.id === id);
@@ -407,7 +427,11 @@ if (cardsBox !== null) {
         closeBtn.addEventListener("click", () => dialog.close());
     }
 
+    // Пошук реагує на кожне введення, чекбокси — на зміну стану.
+    searchInput?.addEventListener("input", update);
+    allergenBoxes.forEach((box) => box.addEventListener("change", update));
+
     // Перший малюнок: підміняємо статичні картки-фолбек тими самими, але
-    // вже складеними з даних. Без JS у розмітці лишаються статичні.
-    render(products);
+    // вже «живими». Без JS у розмітці лишаються статичні — сторінка робоча.
+    update();
 }

@@ -1183,3 +1183,25 @@ dialog button {
   white-space: pre-line;
   line-height: 1.6;
 }
+
+/* Живий фільтр у бічній колонці: пошук на всю ширину, алергени — списком */
+.catalog-tools label {
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.catalog-tools input[type="search"] {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.catalog-tools fieldset {
+  margin-top: var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+}
