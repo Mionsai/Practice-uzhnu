@@ -14,19 +14,17 @@
     <header>
         <h1 id="top">Чиста полиця</h1>
         <nav class="nav" aria-label="Головне меню">
-            <details open>
-                <summary class="nav__toggle">☰ Меню</summary>
-                <ul class="nav__list">
+            <button id="burger" class="nav__toggle" type="button" aria-expanded="false" aria-controls="navList">☰ Меню</button>
+            <ul class="nav__list" id="navList">
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="catalog.html" class="current">Каталог</a></li>
                     <li><a href="index.html#store">Про проєкт</a></li>
                     <li><a href="index.html#alergic">Алергени</a></li>
                     <li><a href="form.html">Підписка</a></li>
                     <li><a href="about.html">Контакти</a></li>
-                </ul>
-            </details>
+            </ul>
         </nav>
-        <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
+        <button id="themeToggle" type="button" aria-pressed="false">Тема</button>
     </header>
 
     <div class="layout">
@@ -78,119 +76,10 @@
                 <div class="spinner" aria-hidden="true"></div>
                 <p>Завантажуємо каталог…</p>
             </div>
-            <div class="cards">
-                <article class="card">
-                    <span class="card__badge card__badge--eco">Еко</span>
-                    <img class="card__img" src="images/oat.jpg" alt="Вівсяні пластівці в паперовому пакеті та дерев'яній мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Вівсяні пластівці</h3>
-                        <p class="card__meta">Крупи та пластівці · 400 г</p>
-                        <p class="card__id">Ідентифікатор: HF-9321-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                        <button id="openDetails" type="button">Швидкий перегляд</button>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/nuts.jpg" alt="Суміш мигдалю, волоських горіхів і фініків у мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Мікс горіхів</h3>
-                        <p class="card__meta">Горіхи та сухофрукти · 250 г</p>
-                        <p class="card__id">Ідентифікатор: HF-1342-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/buckwheat.jpg" alt="Необроблена гречана крупа в мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Гречка зелена необроблена, пропарена, українського виробництва</h3>
-                        <p class="card__meta">Крупи та пластівці · 900 г</p>
-                        <p class="card__id">Ідентифікатор: HF-5567-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <span class="card__badge card__badge--eco">Еко</span>
-                    <img class="card__img" src="images/hummus.jpg" alt="Хумус класичний у скляній банці з оливковою олією зверху">
-                    <div class="card__body">
-                        <h3 class="card__title">Хумус класичний домашній без консервантів і підсилювачів смаку</h3>
-                        <p class="card__meta">Соуси та пасти · 350 г</p>
-                        <p class="card__id">Ідентифікатор: HF-8824-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/quinoa.jpg" alt="Біла кіноа у мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Кіноа органічна біла</h3>
-                        <p class="card__meta">Крупи та пластівці · 400 г</p>
-                        <p class="card__id">Ідентифікатор: HF-3312-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/dried-apricots.jpg" alt="Сушена курага в дерев'яній мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Курага сушена без цукру</h3>
-                        <p class="card__meta">Горіхи та сухофрукти · 300 г</p>
-                        <p class="card__id">Ідентифікатор: HF-4456-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/almonds.jpg" alt="Мигдаль несмажений у мисці">
-                    <div class="card__body">
-                        <h3 class="card__title">Мигдаль несмажений натуральний</h3>
-                        <p class="card__meta">Горіхи та сухофрукти · 300 г</p>
-                        <p class="card__id">Ідентифікатор: HF-6678-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card">
-                    <img class="card__img" src="images/chia-seeds.jpg" alt="Насіння чіа в скляній банці">
-                    <div class="card__body">
-                        <h3 class="card__title">Насіння чіа органічне</h3>
-                        <p class="card__meta">Горіхи та сухофрукти · 200 г</p>
-                        <p class="card__id">Ідентифікатор: HF-7789-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-
-                <article class="card card--featured">
-                    <span class="card__badge">Рекомендуємо</span>
-                    <img class="card__img" src="images/tahini.jpg" alt="Паста тахіні зі свіжого кунжуту">
-                    <div class="card__body">
-                        <h3 class="card__title">Паста тахіні з кунжуту</h3>
-                        <p class="card__meta">Соуси та пасти · 300 г</p>
-                        <p class="card__id">Ідентифікатор: HF-2245-UA</p>
-                    </div>
-                    <div class="card__actions">
-                        <a class="card__action" href="#">Замовити</a>
-                    </div>
-                </article>
-            </div>
+            <!-- §9: контейнер порожній у розмітці — усі картки малює app.js
+                 з даних variant09.json. Порожній стан — окремий блок #empty. -->
+            <div class="cards"></div>
+            <p id="empty" class="cards__empty" hidden>За цими умовами нічого не знайдено.</p>
             <p><a href="#top">Нагору</a></p>
         </section>
 
@@ -244,38 +133,69 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th scope="row">Вівсяні пластівці</th>
-                        <td rowspan="2" data-label="Категорія">Крупи та пластівці</td>
-                        <td data-label="Калорійність, ккал/100 г">362</td>
-                        <td data-label="Вага паковання, г">400</td>
+                        <th scope="row">Гранола медова</th>
+                        <td data-label="Категорія">сніданок</td>
+                        <td data-label="Калорійність, ккал/100 г">410</td>
+                        <td data-label="Вага паковання, г">350</td>
                     </tr>
                     <tr>
-                        <th scope="row">Гречка зелена</th>
-                        <td data-label="Калорійність, ккал/100 г">343</td>
-                        <td data-label="Вага паковання, г">900</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Мікс горіхів</th>
-                        <td rowspan="2" data-label="Категорія">Горіхи та сухофрукти</td>
-                        <td data-label="Калорійність, ккал/100 г">607</td>
+                        <th scope="row">Йогурт натуральний</th>
+                        <td rowspan="2" data-label="Категорія">молочні продукти</td>
+                        <td data-label="Калорійність, ккал/100 г">90</td>
                         <td data-label="Вага паковання, г">250</td>
                     </tr>
                     <tr>
-                        <th scope="row">Мигдаль несмажений</th>
-                        <td data-label="Калорійність, ккал/100 г">579</td>
-                        <td data-label="Вага паковання, г">300</td>
+                        <th scope="row">Сир твердий «Гауда»</th>
+                        <td data-label="Калорійність, ккал/100 г">356</td>
+                        <td data-label="Вага паковання, г">500</td>
                     </tr>
                     <tr>
                         <th scope="row">Хумус класичний</th>
-                        <td data-label="Категорія">Соуси та пасти</td>
+                        <td data-label="Категорія">соуси</td>
                         <td data-label="Калорійність, ккал/100 г">166</td>
-                        <td data-label="Вага паковання, г">350</td>
+                        <td data-label="Вага паковання, г">200</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Фалафель</th>
+                        <td data-label="Категорія">веганське</td>
+                        <td data-label="Калорійність, ккал/100 г">330</td>
+                        <td data-label="Вага паковання, г">300</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Арахісова паста</th>
+                        <td data-label="Категорія">намазки</td>
+                        <td data-label="Калорійність, ккал/100 г">589</td>
+                        <td data-label="Вага паковання, г">300</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Енергетичний батончик шоколадний</th>
+                        <td data-label="Категорія">перекус</td>
+                        <td data-label="Калорійність, ккал/100 г">220</td>
+                        <td data-label="Вага паковання, г">50</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Імбирний чай</th>
+                        <td data-label="Категорія">напої</td>
+                        <td data-label="Калорійність, ккал/100 г">20</td>
+                        <td data-label="Вага паковання, г">250</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Салат кіноа</th>
+                        <td data-label="Категорія">готові страви</td>
+                        <td data-label="Калорійність, ккал/100 г">150</td>
+                        <td data-label="Вага паковання, г">300</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Кокосове печиво</th>
+                        <td data-label="Категорія">випічка</td>
+                        <td data-label="Калорійність, ккал/100 г">310</td>
+                        <td data-label="Вага паковання, г">200</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th scope="row" colspan="3">Разом (5 позицій), сумарна вага пакувань</th>
-                        <td data-label="Сумарна вага, г">2200</td>
+                        <th scope="row" colspan="3">Разом (10 позицій), сумарна вага пакувань</th>
+                        <td data-label="Сумарна вага, г">2700</td>
                     </tr>
                 </tfoot>
             </table>
@@ -286,19 +206,24 @@
         <section id="composition">
             <h2>Склад і алергени</h2>
             <details>
-                <summary>Вівсяні пластівці</summary>
-                <p>Склад: 100% цільнозернові вівсяні пластівці.</p>
-                <p>Алергени: <span class="badge-allergen">глютен</span></p>
-            </details>
-            <details>
-                <summary>Мікс горіхів</summary>
-                <p>Склад: мигдаль, волоський горіх, фініки.</p>
-                <p>Алергени: <span class="badge-allergen">горіхи</span></p>
+                <summary>Гранола медова</summary>
+                <p>Склад: вівсянка, мед, мигдаль, родзинки, олія.</p>
+                <p>Алергени: <span class="badge-allergen">горіхи</span> <span class="badge-allergen">глютен</span></p>
             </details>
             <details>
                 <summary>Хумус класичний</summary>
-                <p>Склад: нут, тахіні (кунжутна паста), оливкова олія, часник, лимонний сік, сіль.</p>
+                <p>Склад: нут, олія, кунжут, часник, перець.</p>
                 <p>Алергени: <span class="badge-allergen">кунжут</span></p>
+            </details>
+            <details>
+                <summary>Арахісова паста</summary>
+                <p>Склад: арахіс, сіль.</p>
+                <p>Алергени: <span class="badge-allergen">арахіс</span></p>
+            </details>
+            <details>
+                <summary>Кокосове печиво</summary>
+                <p>Склад: кокос, борошно, яйця, цукор.</p>
+                <p>Алергени: <span class="badge-allergen">яйця</span> <span class="badge-allergen">глютен</span></p>
             </details>
             <p><a href="#top">Нагору</a></p>
         </section>
@@ -341,9 +266,11 @@
                 <fieldset>
                     <legend>Виключити алерген</legend>
                     <label><input type="checkbox" name="exclude" value="горіхи"> Горіхи</label>
-                    <label><input type="checkbox" name="exclude" value="кунжут"> Кунжут</label>
+                    <label><input type="checkbox" name="exclude" value="арахіс"> Арахіс</label>
                     <label><input type="checkbox" name="exclude" value="глютен"> Глютен</label>
-                    <label><input type="checkbox" name="exclude" value="діоксид сірки"> Діоксид сірки</label>
+                    <label><input type="checkbox" name="exclude" value="лактоза"> Лактоза</label>
+                    <label><input type="checkbox" name="exclude" value="кунжут"> Кунжут</label>
+                    <label><input type="checkbox" name="exclude" value="яйця"> Яйця</label>
                 </fieldset>
             </form>
         </aside>
@@ -364,6 +291,10 @@
         <p id="details-body"></p>
         <button id="closeDetails" type="button">Закрити</button>
     </dialog>
+
+    <!-- §9: спливне повідомлення. role="status" + aria-live озвучує текст;
+         показ/приховування і таймер веде showToast() в app.js. -->
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body>
 
 </html>

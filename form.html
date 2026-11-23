@@ -14,19 +14,17 @@
     <header>
         <h1 id="top">Чиста полиця</h1>
         <nav class="nav" aria-label="Головне меню">
-            <details open>
-                <summary class="nav__toggle">☰ Меню</summary>
-                <ul class="nav__list">
+            <button id="burger" class="nav__toggle" type="button" aria-expanded="false" aria-controls="navList">☰ Меню</button>
+            <ul class="nav__list" id="navList">
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="index.html#store">Про проєкт</a></li>
                     <li><a href="index.html#alergic">Алергени</a></li>
                     <li><a href="form.html" class="current">Підписка</a></li>
                     <li><a href="about.html">Контакти</a></li>
-                </ul>
-            </details>
+            </ul>
         </nav>
-        <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
+        <button id="themeToggle" type="button" aria-pressed="false">Тема</button>
     </header>
 
     <main>
@@ -38,7 +36,7 @@
             підтвердженням підписки та датою першої доставки.
         </p>
 
-        <form class="form-grid" action="/submit" method="post">
+        <form class="form-grid" action="/submit" method="post" novalidate>
             <!-- method="post": форма створює нову підписку, тому повторне надсилання
                  по F5 не має відбуватися випадково, а персональні дані не повинні лишатися в URL -->
 
@@ -178,6 +176,9 @@
             м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
         </address>
     </footer>
+
+    <!-- §9: спливне повідомлення після надсилання форми -->
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body>
 
 </html>

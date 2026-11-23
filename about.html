@@ -7,25 +7,24 @@
     <link rel="stylesheet" href="css/styles.css">
     <title>Контакти — Чиста полиця</title>
     <link rel="icon" href="images/favicon.jpg">
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
     <header>
         <h1 id="top">Чиста полиця</h1>
         <nav class="nav" aria-label="Головне меню">
-            <details open>
-                <summary class="nav__toggle">☰ Меню</summary>
-                <ul class="nav__list">
+            <button id="burger" class="nav__toggle" type="button" aria-expanded="false" aria-controls="navList">☰ Меню</button>
+            <ul class="nav__list" id="navList">
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="index.html#store">Про проєкт</a></li>
                     <li><a href="index.html#alergic">Алергени</a></li>
                     <li><a href="form.html">Підписка</a></li>
                     <li><a href="about.html" class="current">Контакти</a></li>
-                </ul>
-            </details>
+            </ul>
         </nav>
-        <button id="themeToggle" type="button" onclick="document.body.classList.toggle('dark-theme')">Тема</button>
+        <button id="themeToggle" type="button" aria-pressed="false">Тема</button>
     </header>
 
     <main>

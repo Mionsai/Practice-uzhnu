@@ -1,162 +1,125 @@
 "use strict";
 
-// Дані варіанта «Продукти здорового харчування».
-// const тримає саме посилання на масив, а не його вміст — тому push,
-// який міняє вміст, працює; заборонено лише переприсвоїти сам products.
-// З LR9 кожен запис додатково несе поля для картки (image, code, weight,
-// group) і склад (ingredients) — за ним шукаємо поряд із назвою.
+// Дані варіанта 9 «Продукти здорового харчування» — ті самі 10 позицій, що
+// у variant09.json, тут вбудовані масивом об'єктів. Читання з файла через
+// fetch і збереження стану в localStorage — тема LR10, у LR9 дані статичні.
+// id додано для пошуку картки по кліку; image — ім'я файлу в images/.
 const products = [
     {
         id: 1,
-        title: "Вівсяні пластівці",
-        calories: 362,                              // ккал на 100 г
-        protein: 13,                                // г білка на 100 г
-        category: "крупи",
-        group: "Крупи та пластівці",               // як підписано у картці/розділі
-        origin: { country: "Україна", producer: "Органік Лан" },
-        allergens: ["глютен"],
-        ingredients: ["вівсяні пластівці"],
-        tags: ["цільнозернове", "сніданок"],
-        image: "images/oat.jpg",
-        alt: "Вівсяні пластівці в паперовому пакеті та дерев'яній мисці",
-        code: "HF-9321-UA",
-        weight: 400,                                // г, вага паковання
-        eco: true,
+        name: "Гранола медова",
+        category: "сніданок",
+        ingredients: ["вівсянка", "мед", "мигдаль", "родзинки", "олія"],
+        nutrition: { cal: 410, fat_g: 12, carbs_g: 60, protein_g: 8 },
+        allergens: ["горіхи", "глютен"],
+        package: { weight_g: 350, material: "картон", eco: true },
+        image: "images/granola.jpg",
+        alt: "Медова гранола з мигдалем і родзинками в мисці",
     },
     {
         id: 2,
-        title: "Мікс горіхів",
-        calories: 607,
-        protein: 20,
-        category: "горіхи",
-        group: "Горіхи та сухофрукти",
-        origin: { country: "Україна", producer: "Горіховий двір" },
-        allergens: ["горіхи"],
-        ingredients: ["мигдаль", "волоський горіх", "фініки"],
-        tags: ["перекус", "омега-3"],
-        image: "images/nuts.jpg",
-        alt: "Суміш мигдалю, волоських горіхів і фініків у мисці",
-        code: "HF-1342-UA",
-        weight: 250,
+        name: "Йогурт натуральний",
+        category: "молочні продукти",
+        ingredients: ["молоко", "бактерії"],
+        nutrition: { cal: 90, fat_g: 3, carbs_g: 7, protein_g: 5 },
+        allergens: ["лактоза"],
+        package: { weight_g: 250, material: "пластик", eco: false },
+        image: "images/yogurt.jpg",
+        alt: "Натуральний білий йогурт у скляній баночці з ложкою",
     },
     {
         id: 3,
-        title: "Гречка зелена",
-        calories: 343,
-        protein: 13,
-        category: "крупи",
-        group: "Крупи та пластівці",
-        origin: { country: "Україна", producer: "Сварог" },
-        allergens: [],                              // без поширених алергенів
-        ingredients: ["гречка зелена"],
-        tags: ["безглютенове", "залізо"],
-        image: "images/buckwheat.jpg",
-        alt: "Необроблена гречана крупа в мисці",
-        code: "HF-5567-UA",
-        weight: 900,
+        name: "Хумус класичний",
+        category: "соуси",
+        ingredients: ["нут", "олія", "кунжут", "часник", "перець"],
+        nutrition: { cal: 166, fat_g: 9, carbs_g: 14, protein_g: 7 },
+        allergens: ["кунжут"],
+        package: { weight_g: 200, material: "скло", eco: true },
+        image: "images/hummus.jpg",
+        alt: "Хумус класичний у скляній банці з оливковою олією зверху",
     },
     {
         id: 4,
-        title: "Хумус класичний",
-        calories: 166,
-        protein: 8,
-        category: "пасти та спреди",
-        group: "Соуси та пасти",
-        origin: { country: "Україна", producer: "EcoFood" },
-        allergens: ["кунжут"],
-        ingredients: ["нут", "тахіні", "оливкова олія", "часник", "лимонний сік", "сіль"],
-        tags: ["веганське", "закуска"],
-        image: "images/hummus.jpg",
-        alt: "Хумус класичний у скляній банці з оливковою олією зверху",
-        code: "HF-8824-UA",
-        weight: 350,
-        eco: true,
+        name: "Фалафель",
+        category: "веганське",
+        ingredients: ["нут", "часник", "олія", "зелень"],
+        nutrition: { cal: 330, fat_g: 15, carbs_g: 33, protein_g: 13 },
+        allergens: [],
+        package: { weight_g: 300, material: "картон", eco: true },
+        image: "images/falafel.jpg",
+        alt: "Золотисті кульки фалафелю із зеленню на тарілці",
     },
     {
         id: 5,
-        title: "Кіноа органічна",
-        calories: 368,
-        protein: 14,
-        category: "крупи",
-        group: "Крупи та пластівці",
-        origin: { country: "Перу", producer: "Andes Harvest" },
-        allergens: [],
-        ingredients: ["кіноа"],
-        tags: ["безглютенове", "повноцінний білок", "залізо"],
-        image: "images/quinoa.jpg",
-        alt: "Біла кіноа у мисці",
-        code: "HF-3312-UA",
-        weight: 400,
+        name: "Сир твердий «Гауда»",
+        category: "молочні продукти",
+        ingredients: ["молоко", "сіль", "ферменти"],
+        nutrition: { cal: 356, fat_g: 27, carbs_g: 2, protein_g: 25 },
+        allergens: ["лактоза"],
+        package: { weight_g: 500, material: "пластик", eco: false },
+        image: "images/gouda.jpg",
+        alt: "Шматок і скибки твердого сиру «Гауда» на дошці",
     },
     {
         id: 6,
-        title: "Курага сушена",
-        calories: 241,
-        protein: 3.4,
-        category: "сухофрукти",
-        group: "Горіхи та сухофрукти",
-        origin: { country: "Туреччина", producer: "Anatolia" },
-        allergens: ["діоксид сірки"],
-        ingredients: ["курага", "діоксид сірки"],
-        tags: ["калій", "перекус"],
-        image: "images/dried-apricots.jpg",
-        alt: "Сушена курага в дерев'яній мисці",
-        code: "HF-4456-UA",
-        weight: 300,
+        name: "Арахісова паста",
+        category: "намазки",
+        ingredients: ["арахіс", "сіль"],
+        nutrition: { cal: 589, fat_g: 50, carbs_g: 16, protein_g: 25 },
+        allergens: ["арахіс"],
+        package: { weight_g: 300, material: "скло", eco: true },
+        image: "images/peanut-butter.jpg",
+        alt: "Арахісова паста у відкритій скляній банці з горішками поруч",
     },
     {
         id: 7,
-        title: "Мигдаль несмажений",
-        calories: 579,
-        protein: 21,
-        category: "горіхи",
-        group: "Горіхи та сухофрукти",
-        origin: { country: "Іспанія", producer: "Valencia Nuts" },
-        allergens: ["горіхи"],
-        ingredients: ["мигдаль"],
-        tags: ["вітамін E", "кето"],
-        image: "images/almonds.jpg",
-        alt: "Мигдаль несмажений у мисці",
-        code: "HF-6678-UA",
-        weight: 300,
+        name: "Енергетичний батончик шоколадний",
+        category: "перекус",
+        ingredients: ["вівсянка", "шоколад", "горіхи", "мед"],
+        nutrition: { cal: 220, fat_g: 9, carbs_g: 28, protein_g: 6 },
+        allergens: ["горіхи", "глютен"],
+        package: { weight_g: 50, material: "фольга", eco: false },
+        image: "images/energy-bar.jpg",
+        alt: "Шоколадно-вівсяний батончик з горіхами, частково розгорнутий",
     },
     {
         id: 8,
-        title: "Насіння чіа",
-        calories: 486,
-        protein: 17,
-        category: "насіння",
-        group: "Горіхи та сухофрукти",
-        origin: { country: "Мексика", producer: "Maya Fields" },
+        name: "Імбирний чай",
+        category: "напої",
+        ingredients: ["імбир", "лимон", "мед"],
+        nutrition: { cal: 20, fat_g: 0, carbs_g: 5, protein_g: 0 },
         allergens: [],
-        ingredients: ["насіння чіа"],
-        tags: ["омега-3", "клітковина", "суперфуд"],
-        image: "images/chia-seeds.jpg",
-        alt: "Насіння чіа в скляній банці",
-        code: "HF-7789-UA",
-        weight: 200,
+        package: { weight_g: 250, material: "скло", eco: true },
+        image: "images/ginger-tea.jpg",
+        alt: "Склянка імбирного чаю з лимоном і коренем імбиру поруч",
     },
     {
         id: 9,
-        title: "Паста тахіні",
-        calories: 595,
-        protein: 17,
-        category: "пасти та спреди",
-        group: "Соуси та пасти",
-        origin: { country: "Україна", producer: "EcoFood" },
-        allergens: ["кунжут"],
-        ingredients: ["кунжут"],
-        tags: ["веганське", "джерело кальцію"],
-        image: "images/tahini.jpg",
-        alt: "Паста тахіні зі свіжого кунжуту",
-        code: "HF-2245-UA",
-        weight: 300,
-        featured: true,
+        name: "Салат кіноа",
+        category: "готові страви",
+        ingredients: ["кіноа", "огірки", "помідори", "зелень", "олія"],
+        nutrition: { cal: 150, fat_g: 5, carbs_g: 22, protein_g: 6 },
+        allergens: [],
+        package: { weight_g: 300, material: "бамбук", eco: true },
+        image: "images/quinoa-salad.jpg",
+        alt: "Свіжий салат із кіноа, огірків, помідорів і зелені в мисці",
+        featured: true,                             // «Рекомендуємо»: виводиться першою (order:-1)
+    },
+    {
+        id: 10,
+        name: "Кокосове печиво",
+        category: "випічка",
+        ingredients: ["кокос", "борошно", "яйця", "цукор"],
+        nutrition: { cal: 310, fat_g: 18, carbs_g: 34, protein_g: 4 },
+        allergens: ["яйця", "глютен"],
+        package: { weight_g: 200, material: "картон", eco: true },
+        image: "images/coconut-cookies.jpg",
+        alt: "Домашнє кокосове печиво із золотистими краями на тарілці",
     },
 ];
 
 
-// === Допоміжні функції ===
+// === Допоміжна функція виводу ===
 
 // Записує текст у елемент за id. Масив рядків склеює переносами.
 const show = (id, value) => {
@@ -171,28 +134,31 @@ const show = (id, value) => {
 
 // === Обробка даних (LR8, переюзається каталогом LR9) ===
 
-// Приймає масив продуктів, повертає масив готових рядків «№. назва — …».
+// Приймає масив продуктів, повертає масив рядків «№. назва — категорія, ккал».
 function numberedList(items) {
     const lines = [];
     for (let i = 0; i < items.length; i++) {
         const p = items[i];
-        lines.push(`${i + 1}. ${p.title} — ${p.category}, ${p.calories} ккал (${p.origin.country}, ${p.origin.producer})`);
+        lines.push(`${i + 1}. ${p.name} — ${p.category}, ${p.nutrition.cal} ккал`);
     }
     return lines;
 }
 
-// Приймає продукт, повертає назву відділу каталогу за його категорією.
+// Приймає продукт, повертає назву відділу за його категорією.
 function categoryOf(product) {
     switch (product.category) {
-        case "горіхи":
-        case "насіння":                 // навмисне групування: один відділ
-            return "Горіхи та насіння";
-        case "крупи":
-            return "Крупи та каші";
-        case "сухофрукти":
-            return "Сухофрукти";
-        default:                        // сюди падають «пасти та спреди» тощо
-            return "Інші продукти";
+        case "молочні продукти":
+            return "Молочне";
+        case "соуси":
+        case "намазки":                 // навмисне групування: один відділ
+            return "Соуси та намазки";
+        case "напої":
+            return "Напої";
+        case "веганське":
+        case "готові страви":
+            return "Готові страви";
+        default:                        // сніданок, перекус, випічка
+            return "Сніданки та снеки";
     }
 }
 
@@ -200,24 +166,24 @@ function categoryOf(product) {
 const filterByCategory = (items, value) => items.filter((p) => p.category === value);
 
 // Повертає продукти з калорійністю не вище порогу.
-const filterByCalorieUpTo = (items, maxCalories) => items.filter((p) => p.calories <= maxCalories);
+const filterByCalorieUpTo = (items, maxCalories) => items.filter((p) => p.nutrition.cal <= maxCalories);
 
 // Варіант: повертає продукти, що НЕ містять заданого алергену.
 const filterWithoutAllergen = (items, allergen) => items.filter((p) => !p.allergens.includes(allergen));
 
 // Сортує копію за калорійністю (зростання) — оригінал не чіпає.
-const sortByCalories = (items) => [...items].sort((a, b) => a.calories - b.calories);
+const sortByCalories = (items) => [...items].sort((a, b) => a.nutrition.cal - b.nutrition.cal);
 
 // Сортує копію за назвою в українській абетці.
-const sortByName = (items) => [...items].sort((a, b) => a.title.localeCompare(b.title, "uk"));
+const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "uk"));
 
 // Приймає масив продуктів, повертає об'єкт зі статистикою добірки.
 function statsForItems(items) {
-    // Початкове 0 — щоб сума стартувала з числа; без нього перший продукт
-    // став би акумулятором і до калорій додався б цілий об'єкт.
-    const total = items.reduce((sum, p) => sum + p.calories, 0);
-    // max через reduce: тримаємо найбілковіший запис, порівнюючи з поточним.
-    const max = items.reduce((best, p) => (p.protein > best.protein ? p : best));
+    // Явне початкове 0 — щоб сума стартувала з числа, а не з об'єкта продукту.
+    const total = items.reduce((sum, p) => sum + p.nutrition.cal, 0);
+    // Явний seed items[0] — так само, як 0 для суми. Без нього reduce тихо
+    // бере перший елемент за початковий; із seed старт видно в коді.
+    const max = items.reduce((best, p) => (p.nutrition.protein_g > best.nutrition.protein_g ? p : best), items[0]);
     return {
         count: items.length,
         total,
@@ -228,83 +194,124 @@ function statsForItems(items) {
 }
 
 
-// === Демонстрація роботи (LR8) ===
-// Запускаємо лише там, де є блок виводу, тобто на catalog.html. На form.html
-// цих id немає, і без перевірки show() сипав би console.error.
-if (document.getElementById("out-count") !== null) {
-    show("out-count", `Продуктів у каталозі: ${products.length}`);
-    show("out-numbered", numberedList(products));
+// === Спливне повідомлення (§9) ===
 
-    // «назва → відділ» для кожного продукту
-    show("out-categories", products.map((p) => `${p.title} → ${categoryOf(p)}`));
+const toastBox = document.getElementById("toast");
+let toastTimer = null;
 
-    // Порожній або ні — тернар вирішує, що показати
-    const asList = (list) => list.length > 0
-        ? list.map((p) => " • " + p.title).join("\n")
-        : "нічого не знайдено";
-
-    const crops = filterByCategory(products, "крупи");
-    const lowCal = filterByCalorieUpTo(products, 350);
-    const noNuts = filterWithoutAllergen(products, "горіхи");
-    const none = filterByCategory(products, "напої");        // свідомо порожній результат
-
-    show("out-filter", [
-        `Категорія «крупи» (${crops.length}):`,
-        asList(crops),
-        `До 350 ккал (${lowCal.length}):`,
-        asList(lowCal),
-        `Без алергену «горіхи» (${noNuts.length}):`,
-        asList(noNuts),
-        `Категорія «напої» (${none.length}):`,
-        asList(none),
-    ]);
-
-    show("out-sorted", [
-        "За калорійністю (зростання):",
-        sortByCalories(products).map((p) => ` • ${p.title} — ${p.calories} ккал`).join("\n"),
-        "За назвою (українська абетка):",
-        sortByName(products).map((p) => " • " + p.title).join("\n"),
-        "Вихідний порядок (не зіпсований сортуванням):",
-        products.map((p) => " • " + p.title).join("\n"),
-    ]);
-
-    // Статистика: виводимо поля об'єкта окремими рядками, а не сам об'єкт
-    const stats = statsForItems(products);
-    show("out-stats", [
-        `Усього продуктів: ${stats.count}`,
-        `Сумарна калорійність: ${stats.total} ккал`,
-        `Середня калорійність: ${stats.average} ккал`,
-        `Найбільш білковий: ${stats.max.title} (${stats.max.protein} г білка на 100 г)`,
-        `Різних категорій: ${stats.categories}`,
-    ]);
+// Показує коротке повідомлення й ховає його за 3 с. clearTimeout скидає
+// попередній відлік, щоб підряд кілька викликів не ховали тост завчасно.
+function showToast(message) {
+    if (toastBox === null) {
+        return;
+    }
+    toastBox.textContent = message;
+    toastBox.hidden = false;
+    toastBox.classList.add("toast--show");
+    if (toastTimer !== null) {
+        clearTimeout(toastTimer);
+    }
+    toastTimer = setTimeout(() => {
+        toastBox.classList.remove("toast--show");
+        toastBox.hidden = true;
+    }, 3000);
 }
 
 
-// === Каталог: рендер, пошук, фільтр, делегування (LR9) ===
-// Весь блок прив'язаний до контейнера карток; якщо його немає (інші
-// сторінки) — нічого не чіпаємо.
+// === Меню (§7): кнопка-гамбургер замість <details>, керована з JS ===
+const burger = document.getElementById("burger");
+const navList = document.getElementById("navList");
+if (burger !== null && navList !== null) {
+    // Єдина точка правди про стан меню: тримає aria-expanded і hidden
+    // синхронними, щоб скрінрідер і око бачили те саме.
+    const setMenu = (open) => {
+        burger.setAttribute("aria-expanded", String(open));
+        navList.hidden = !open;
+    };
+
+    // На широкому екрані меню — завжди відкритий рядок, на телефоні стартує
+    // згорнутим. matchMedia тримає стан правильним і після зміни ширини
+    // (саме на цьому LR7 на <details> ламався при ресайзі).
+    const wide = window.matchMedia("(min-width: 768px)");
+    const syncToWidth = () => setMenu(wide.matches);
+    syncToWidth();
+    wide.addEventListener("change", syncToWidth);
+
+    burger.addEventListener("click", () => {
+        setMenu(burger.getAttribute("aria-expanded") !== "true");
+    });
+
+    // Escape згортає меню…
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            setMenu(false);
+        }
+    });
+
+    // …і клік поза навігацією теж, але лише коли меню згорнуте в гамбургер
+    // (на вузькому екрані); на широкому список завжди відкритий.
+    document.addEventListener("click", (event) => {
+        if (!wide.matches && event.target.closest(".nav") === null) {
+            setMenu(false);
+        }
+    });
+}
+
+
+// === Тема (§8): перемикач на JS замість inline onclick ===
+const themeBtn = document.getElementById("themeToggle");
+if (themeBtn !== null) {
+    const root = document.documentElement;          // клас теми живе на <html>
+
+    const isDark = () => root.classList.contains("dark-theme");
+
+    const applyTheme = (dark) => {
+        root.classList.toggle("dark-theme", dark);
+        root.classList.toggle("light-theme", !dark);
+        themeBtn.setAttribute("aria-pressed", String(dark));
+    };
+
+    // Стартова тема — із системного налаштування користувача. Збереження
+    // вибору між сеансами лишаємо на LR10 (localStorage).
+    applyTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+    themeBtn.addEventListener("click", () => applyTheme(!isDark()));
+}
+
+
+// === Каталог (§9): рендер карток, пошук, фільтр, делегування ===
 const cardsBox = document.querySelector(".cards");
 if (cardsBox !== null) {
     const searchInput = document.getElementById("search");
     const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
     const countOut = document.getElementById("catalog-count");
+    const emptyBox = document.getElementById("empty");
 
     const dialog = document.getElementById("details");
     const dialogTitle = document.getElementById("details-title");
     const dialogBody = document.getElementById("details-body");
     const closeBtn = document.getElementById("closeDetails");
 
-    // Будує один DOM-вузол картки з даних продукту. Жодного innerHTML —
-    // текст кладемо через textContent, тож дані не можуть «втекти» в розмітку.
+    // Будує один DOM-вузол картки з даних продукту. Текст скрізь кладемо
+    // через textContent — тоді назва чи склад потрапляють на сторінку як
+    // звичайний текст, а не як розмітка.
     function cardNode(product) {
         const card = document.createElement("article");
+        // card--featured (order:-1) виводить рекомендовану картку першою в сітці,
+        // не чіпаючи порядок у DOM (бонус LR6, повернутий у §9)
         card.className = product.featured ? "card card--featured" : "card";
         card.dataset.id = product.id;              // за ним знайдемо продукт у кліку
 
-        if (product.eco || product.featured) {
+        // бейдж: у рекомендованої — «Рекомендуємо», інакше «Еко» для еко-паковання
+        if (product.featured) {
             const badge = document.createElement("span");
-            badge.className = product.eco ? "card__badge card__badge--eco" : "card__badge";
-            badge.textContent = product.eco ? "Еко" : "Рекомендуємо";
+            badge.className = "card__badge";
+            badge.textContent = "Рекомендуємо";
+            card.append(badge);
+        } else if (product.package.eco) {
+            const badge = document.createElement("span");
+            badge.className = "card__badge card__badge--eco";
+            badge.textContent = "Еко";
             card.append(badge);
         }
 
@@ -320,25 +327,39 @@ if (cardsBox !== null) {
 
         const title = document.createElement("h3");
         title.className = "card__title";
-        title.textContent = product.title;
+        title.textContent = product.name;
 
         const meta = document.createElement("p");
         meta.className = "card__meta";
-        meta.textContent = `${product.group} · ${product.weight} г`;
+        meta.textContent = `${product.category} · ${product.package.weight_g} г · ${product.package.material}`;
 
-        const code = document.createElement("p");
-        code.className = "card__id";
-        code.textContent = `Ідентифікатор: ${product.code}`;
+        const nutri = document.createElement("p");
+        nutri.className = "card__nutri";
+        nutri.textContent = `${product.nutrition.cal} ккал · білок ${product.nutrition.protein_g} г`;
 
-        body.append(title, meta, code);
+        body.append(title, meta, nutri);
+
+        // Алергени — окремими червоними мітками; якщо їх немає, рядок не додаємо.
+        if (product.allergens.length > 0) {
+            const allerg = document.createElement("p");
+            allerg.className = "card__allergens";
+            product.allergens.forEach((name) => {
+                const tag = document.createElement("span");
+                tag.className = "badge-allergen";
+                tag.textContent = name;
+                allerg.append(tag);
+            });
+            body.append(allerg);
+        }
+
         card.append(body);
 
         const actions = document.createElement("div");
         actions.className = "card__actions";
 
-        const order = document.createElement("a");
-        order.className = "card__action";
-        order.href = "#";
+        const order = document.createElement("button");
+        order.className = "card__action card__order";
+        order.type = "button";
         order.textContent = "Замовити";
 
         const more = document.createElement("button");
@@ -352,19 +373,16 @@ if (cardsBox !== null) {
         return card;
     }
 
-    // Малює передану добірку: чистить контейнер і складає картки наново.
-    // DocumentFragment — щоб 9 вставок не смикали верстку по одній.
+    // Малює передану добірку. replaceChildren приймає DocumentFragment і
+    // одним рухом замінює весь вміст контейнера — коротше й чистіше, ніж
+    // спочатку вручну чистити, а потім додавати.
     function render(items) {
-        cardsBox.textContent = "";
-        if (items.length === 0) {
-            const empty = document.createElement("p");
-            empty.className = "cards__empty";
-            empty.textContent = "За цими умовами нічого не знайдено.";
-            cardsBox.append(empty);
-        } else {
-            const frag = document.createDocumentFragment();
-            items.forEach((p) => frag.append(cardNode(p)));
-            cardsBox.append(frag);
+        const frag = document.createDocumentFragment();
+        items.forEach((p) => frag.append(cardNode(p)));
+        cardsBox.replaceChildren(frag);
+
+        if (emptyBox !== null) {
+            emptyBox.hidden = items.length !== 0;
         }
         if (countOut !== null) {
             countOut.textContent = `Показано: ${items.length} із ${products.length}`;
@@ -379,7 +397,7 @@ if (cardsBox !== null) {
 
         return products.filter((p) => {
             // пошук за назвою АБО будь-яким інгредієнтом складу
-            const haystack = [p.title, ...p.ingredients].join(" ").toLowerCase();
+            const haystack = [p.name, ...p.ingredients].join(" ").toLowerCase();
             const matchesQuery = query === "" || haystack.includes(query);
             // лишаємо продукт, лише якщо він не містить жодного виключеного алергену
             const hasExcluded = p.allergens.some((a) => excluded.includes(a));
@@ -395,13 +413,12 @@ if (cardsBox !== null) {
         if (product === undefined || dialog === null) {
             return;
         }
-        dialogTitle.textContent = product.title;
+        dialogTitle.textContent = product.name;
         dialogBody.textContent = [
-            `Ідентифікатор: ${product.code}`,
-            `Відділ: ${product.group} (${categoryOf(product)})`,
+            `Відділ: ${product.category} (${categoryOf(product)}).`,
             `Склад: ${product.ingredients.join(", ")}.`,
-            `Харчова цінність на 100 г: ${product.calories} ккал, білок ${product.protein} г.`,
-            `Вага паковання: ${product.weight} г · походження: ${product.origin.country}, ${product.origin.producer}.`,
+            `Харчова цінність на 100 г: ${product.nutrition.cal} ккал, білки ${product.nutrition.protein_g} г, жири ${product.nutrition.fat_g} г, вуглеводи ${product.nutrition.carbs_g} г.`,
+            `Паковання: ${product.package.weight_g} г, ${product.package.material}${product.package.eco ? " (еко)" : ""}.`,
             product.allergens.length > 0
                 ? `Алергени: ${product.allergens.join(", ")}.`
                 : "Без поширених алергенів.",
@@ -410,17 +427,20 @@ if (cardsBox !== null) {
     }
 
     // Делегування: один слухач на всьому контейнері обслуговує будь-яку
-    // картку, зокрема й ті, що з'являться після перемальовування. Клік по
-    // посиланню «Замовити» лишаємо браузеру, решта картки відкриває перегляд.
+    // картку, зокрема й ті, що зʼявляться після перемальовування. «Замовити»
+    // кидає тост у кошик, решта картки відкриває швидкий перегляд.
     cardsBox.addEventListener("click", (event) => {
-        if (event.target.closest(".card__action") !== null) {
-            return;
-        }
         const card = event.target.closest(".card");
         if (card === null) {
             return;
         }
-        openDetails(Number(card.dataset.id));
+        const id = Number(card.dataset.id);
+        if (event.target.closest(".card__order") !== null) {
+            const product = products.find((p) => p.id === id);
+            showToast(`«${product.name}» додано в кошик`);
+            return;
+        }
+        openDetails(id);
     });
 
     if (closeBtn !== null) {
@@ -431,23 +451,35 @@ if (cardsBox !== null) {
     searchInput?.addEventListener("input", update);
     allergenBoxes.forEach((box) => box.addEventListener("change", update));
 
-    // Перший малюнок: підміняємо статичні картки-фолбек тими самими, але
-    // вже «живими». Без JS у розмітці лишаються статичні — сторінка робоча.
+    // Перший малюнок каталогу з даних. console.time показує вартість рендера:
+    // replaceChildren + DocumentFragment роблять одну вставку в DOM, тож
+    // браузер перераховує верстку раз (бонус — пояснення й замір у README).
+    console.time("Рендер каталогу");
     update();
+    console.timeEnd("Рендер каталогу");
 }
 
 
-// === Валідація форми підписки (LR9) ===
-// Прив'язка до самої форми: блок працює лише на form.html.
+// === Валідація форми підписки (§9) ===
+// novalidate стоїть атрибутом у form.html, тож нативні підказки вимкнені й
+// перевірку веде цей код — через Constraint Validation API плюс власні
+// правила (setCustomValidity).
 const subscribeForm = document.querySelector(".form-grid");
 if (subscribeForm !== null) {
-    // Вимикаємо нативні підказки-«бульбашки» й беремо валідацію на себе.
-    // noValidate ставимо з JS: без скрипта залишається звичайна HTML5-перевірка.
-    subscribeForm.noValidate = true;
-
     const status = document.getElementById("form-status");
 
-    // Людяніші повідомлення під конкретні поля; якщо тут нема — беремо
+    const freqLabels = {
+        weekly: "щотижня",
+        biweekly: "раз на два тижні",
+        monthly: "щомісяця",
+    };
+    const allergenLabels = {
+        nuts: "горіхи",
+        gluten: "глютен",
+        lactose: "лактоза",
+    };
+
+    // Людяніші повідомлення під конкретні поля; якщо тут немає — беремо
     // стандартний текст браузера (validationMessage).
     const messages = {
         fullname: "Вкажіть прізвище та ім'я (щонайменше 2 символи).",
@@ -461,9 +493,29 @@ if (subscribeForm !== null) {
         agree: "Потрібна згода з умовами підписки.",
     };
 
+    // Власні перевірки поверх HTML-атрибутів: прізвище+ім'я двома словами
+    // і дата доставки не в минулому. setCustomValidity("") знімає помилку,
+    // непорожній текст робить поле невалідним для checkValidity().
+    const today = new Date().toISOString().slice(0, 10);
+
+    function runCustomChecks() {
+        const nameField = subscribeForm.elements.fullname;
+        nameField.setCustomValidity(
+            nameField.value.trim().split(/\s+/).length < 2
+                ? "Вкажіть і прізвище, і ім'я через пробіл."
+                : ""
+        );
+
+        const dateField = subscribeForm.elements.delivery_date;
+        dateField.setCustomValidity(
+            dateField.value !== "" && dateField.value < today
+                ? "Дата доставки не може бути в минулому."
+                : ""
+        );
+    }
+
     // Показує або ховає повідомлення про помилку під полем.
     function setError(field, text) {
-        // шукаємо вже створений вузол помилки поруч; немає — створюємо
         let box = field.parentElement.querySelector(".field-error");
         if (text === "") {
             field.removeAttribute("aria-invalid");
@@ -481,7 +533,6 @@ if (subscribeForm !== null) {
         box.textContent = text;
     }
 
-    // Перевіряє одне поле через Constraint Validation API, домальовує текст.
     function validateField(field) {
         if (field.validity.valid) {
             setError(field, "");
@@ -491,20 +542,69 @@ if (subscribeForm !== null) {
         return false;
     }
 
-    // Поки користувач править поле — прибираємо помилку, щойно воно стало
-    // валідним, щоб підказка не «висіла» після виправлення.
+    // Поки користувач править поле — знімаємо власну помилку й ховаємо текст,
+    // щойно значення стало валідним.
     subscribeForm.addEventListener("input", (event) => {
         const field = event.target;
+        if (field.name === "fullname" || field.name === "delivery_date") {
+            field.setCustomValidity("");
+        }
         if (field.willValidate && field.validity.valid) {
             setError(field, "");
         }
     });
 
+    // Збирає квитанцію окремими вузлами через createElement — не текстовим
+    // рядком. Повертає готовий <div>, який кладемо у #form-status.
+    function buildReceipt() {
+        const el = subscribeForm.elements;
+
+        // значення різних типів читаємо явно
+        const persons = Number(el.persons.value);                 // Number()
+        const agreed = el.agree.checked;                          // .checked
+        const freqChecked = subscribeForm.querySelector('input[name="box_frequency"]:checked');
+        const freq = freqChecked === null ? "не вказано" : freqLabels[freqChecked.value];
+        const excluded = [...subscribeForm.querySelectorAll('input[name="exclude_allergens"]')]
+            .filter((box) => box.checked)                         // .checked
+            .map((box) => allergenLabels[box.value]);
+
+        const receipt = document.createElement("div");
+        receipt.className = "receipt";
+
+        const heading = document.createElement("h3");
+        heading.textContent = "Квитанція підписки";
+        receipt.append(heading);
+
+        const dl = document.createElement("dl");
+        const row = (term, desc) => {
+            const dt = document.createElement("dt");
+            dt.textContent = term;
+            const dd = document.createElement("dd");
+            dd.textContent = desc;
+            dl.append(dt, dd);
+        };
+
+        row("Отримувач", el.fullname.value.trim());
+        row("Пошта", el.email.value);
+        row("Телефон", el.phone.value);
+        row("Перша доставка", el.delivery_date.value);
+        row("Адреса", el.address.value.trim());
+        row("Тип боксу", el.box_type.selectedOptions[0].textContent);
+        row("Осіб у родині", String(persons));
+        row("Періодичність", freq);
+        row("Виключити алергени", excluded.length > 0 ? excluded.join(", ") : "немає");
+        row("Код продукту", el.product_code.value);
+        row("Згода з умовами", agreed ? "так" : "ні");
+
+        receipt.append(dl);
+        return receipt;
+    }
+
     subscribeForm.addEventListener("submit", (event) => {
         event.preventDefault();         // бекенду немає — обробляємо самі
+        runCustomChecks();
 
         let firstInvalid = null;
-        // перевіряємо всі поля, що беруть участь у валідації
         for (const field of subscribeForm.elements) {
             if (!field.willValidate) {
                 continue;
@@ -516,20 +616,72 @@ if (subscribeForm !== null) {
 
         if (firstInvalid !== null) {
             if (status !== null) {
-                status.textContent = "Перевірте підсвічені поля — форму не надіслано.";
+                status.replaceChildren("Перевірте підсвічені поля — форму не надіслано.");
                 status.className = "form-status form-status--error";
             }
-            firstInvalid.focus();       // одразу ведемо до першої помилки
+            showToast("Перевірте форму — є помилки");
+            firstInvalid.focus();
             return;
         }
 
-        // Усе валідне: імітуємо успішне оформлення.
-        const email = subscribeForm.elements.email.value;
+        // Усе валідне: показуємо квитанцію (окремими вузлами) і чистимо форму.
         if (status !== null) {
-            status.textContent = `Дякуємо! Підписку оформлено, лист із підтвердженням надіслано на ${email}.`;
+            status.replaceChildren(buildReceipt());
             status.className = "form-status form-status--ok";
             status.scrollIntoView({ behavior: "smooth", block: "center" });
         }
+        showToast("Підписку оформлено ✓");
         subscribeForm.reset();
     });
+}
+
+
+// === Демонстрація роботи (LR8) ===
+// Стоїть у кінці файла — після оголошення всіх функцій. Працює лише там, де є
+// блок виводу (catalog.html); на інших сторінках цих id немає.
+if (document.getElementById("out-count") !== null) {
+    show("out-count", `Продуктів у каталозі: ${products.length}`);
+    show("out-numbered", numberedList(products));
+
+    // «назва → відділ» для кожного продукту
+    show("out-categories", products.map((p) => `${p.name} → ${categoryOf(p)}`));
+
+    // Порожній або ні — тернар вирішує, що показати
+    const asList = (list) => list.length > 0
+        ? list.map((p) => " • " + p.name).join("\n")
+        : "нічого не знайдено";
+
+    const dairy = filterByCategory(products, "молочні продукти");
+    const lowCal = filterByCalorieUpTo(products, 200);
+    const noGluten = filterWithoutAllergen(products, "глютен");
+    const none = filterByCategory(products, "десерти");      // свідомо порожній результат
+
+    show("out-filter", [
+        `Категорія «молочні продукти» (${dairy.length}):`,
+        asList(dairy),
+        `До 200 ккал (${lowCal.length}):`,
+        asList(lowCal),
+        `Без алергену «глютен» (${noGluten.length}):`,
+        asList(noGluten),
+        `Категорія «десерти» (${none.length}):`,
+        asList(none),
+    ]);
+
+    show("out-sorted", [
+        "За калорійністю (зростання):",
+        sortByCalories(products).map((p) => ` • ${p.name} — ${p.nutrition.cal} ккал`).join("\n"),
+        "За назвою (українська абетка):",
+        sortByName(products).map((p) => " • " + p.name).join("\n"),
+        "Вихідний порядок (не зіпсований сортуванням):",
+        products.map((p) => " • " + p.name).join("\n"),
+    ]);
+
+    const stats = statsForItems(products);
+    show("out-stats", [
+        `Усього продуктів: ${stats.count}`,
+        `Сумарна калорійність: ${stats.total} ккал`,
+        `Середня калорійність: ${stats.average} ккал`,
+        `Найбільш білковий: ${stats.max.name} (${stats.max.nutrition.protein_g} г білка на 100 г)`,
+        `Різних категорій: ${stats.categories}`,
+    ]);
 }
