@@ -1,0 +1,173 @@
+[
+    {
+      "name": "Гранола медова",
+      "category": "сніданок",
+      "ingredients": ["вівсянка", "мед", "мигдаль", "родзинки", "олія"],
+      "nutrition": {
+        "cal": 410,
+        "fat_g": 12,
+        "carbs_g": 60,
+        "protein_g": 8
+      },
+      "allergens": ["горіхи", "глютен"],
+      "package": {
+        "weight_g": 350,
+        "material": "картон",
+        "eco": true
+      }
+    },
+    {
+      "name": "Йогурт натуральний",
+      "category": "молочні продукти",
+      "ingredients": ["молоко", "бактерії"],
+      "nutrition": {
+        "cal": 90,
+        "fat_g": 3,
+        "carbs_g": 7,
+        "protein_g": 5
+      },
+      "allergens": ["лактоза"],
+      "package": {
+        "weight_g": 250,
+        "material": "пластик",
+        "eco": false
+      }
+    },
+    {
+      "name": "Хумус класичний",
+      "category": "соуси",
+      "ingredients": ["нут", "олія", "кунжут", "часник", "перець"],
+      "nutrition": {
+        "cal": 166,
+        "fat_g": 9,
+        "carbs_g": 14,
+        "protein_g": 7
+      },
+      "allergens": ["кунжут"],
+      "package": {
+        "weight_g": 200,
+        "material": "скло",
+        "eco": true
+      }
+    },
+    {
+      "name": "Фалафель",
+      "category": "веганське",
+      "ingredients": ["нут", "часник", "олія", "зелень"],
+      "nutrition": {
+        "cal": 330,
+        "fat_g": 15,
+        "carbs_g": 33,
+        "protein_g": 13
+      },
+      "allergens": [],
+      "package": {
+        "weight_g": 300,
+        "material": "картон",
+        "eco": true
+      }
+    },
+    {
+      "name": "Сир твердий 'Гауда'",
+      "category": "молочні продукти",
+      "ingredients": ["молоко", "сіль", "ферменти"],
+      "nutrition": {
+        "cal": 356,
+        "fat_g": 27,
+        "carbs_g": 2,
+        "protein_g": 25
+      },
+      "allergens": ["лактоза"],
+      "package": {
+        "weight_g": 500,
+        "material": "пластик",
+        "eco": false
+      }
+    },
+    {
+      "name": "Арахісова паста",
+      "category": "намазки",
+      "ingredients": ["арахіс", "сіль"],
+      "nutrition": {
+        "cal": 589,
+        "fat_g": 50,
+        "carbs_g": 16,
+        "protein_g": 25
+      },
+      "allergens": ["арахіс"],
+      "package": {
+        "weight_g": 300,
+        "material": "скло",
+        "eco": true
+      }
+    },
+    {
+      "name": "Енергетичний батончик шоколадний",
+      "category": "перекус",
+      "ingredients": ["вівсянка", "шоколад", "горіхи", "мед"],
+      "nutrition": {
+        "cal": 220,
+        "fat_g": 9,
+        "carbs_g": 28,
+        "protein_g": 6
+      },
+      "allergens": ["горіхи", "глютен"],
+      "package": {
+        "weight_g": 50,
+        "material": "фольга",
+        "eco": false
+      }
+    },
+    {
+      "name": "Імбирний чай",
+      "category": "напої",
+      "ingredients": ["імбир", "лимон", "мед"],
+      "nutrition": {
+        "cal": 20,
+        "fat_g": 0,
+        "carbs_g": 5,
+        "protein_g": 0
+      },
+      "allergens": [],
+      "package": {
+        "weight_g": 250,
+        "material": "скло",
+        "eco": true
+      }
+    },
+    {
+      "name": "Салат кіноа",
+      "category": "готові страви",
+      "ingredients": ["кіноа", "огірки", "помідори", "зелень", "олія"],
+      "nutrition": {
+        "cal": 150,
+        "fat_g": 5,
+        "carbs_g": 22,
+        "protein_g": 6
+      },
+      "allergens": [],
+      "package": {
+        "weight_g": 300,
+        "material": "бамбук",
+        "eco": true
+      }
+    },
+    {
+      "name": "Кокосове печиво",
+      "category": "випічка",
+      "ingredients": ["кокос", "борошно", "яйця", "цукор"],
+      "nutrition": {
+        "cal": 310,
+        "fat_g": 18,
+        "carbs_g": 34,
+        "protein_g": 4
+      },
+      "allergens": ["яйця", "глютен"],
+      "package": {
+        "weight_g": 200,
+        "material": "картон",
+        "eco": true
+      }
+    }
+  ]
+  
