@@ -145,6 +145,8 @@ if (themeBtn !== null) {
 // === Каталог: рендер із завантажених даних (LR10) ===
 const cardsBox = document.querySelector(".cards");
 if (cardsBox !== null) {
+    const loader = document.querySelector(".loader");
+    const loadError = document.getElementById("load-error");
     const searchInput = document.getElementById("search");
     const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
     const countOut = document.getElementById("catalog-count");
@@ -305,14 +307,33 @@ if (cardsBox !== null) {
     // id у файлі немає — присвоюємо за позицією.
     const withIds = (data) => data.map((p, i) => ({ ...p, id: i + 1 }));
 
-    // Запуск: завантажуємо дані й малюємо каталог. Поки без спінера й
-    // повідомлення про помилку (буде наступним комітом) — помилки йдуть у консоль.
+    // Показує блок помилки з людським текстом (а не лише console.error) —
+    // користувач консолі не відкриває, для нього порожня сторінка = «зламалось».
+    function showLoadError(error) {
+        if (loadError === null) {
+            return;
+        }
+        loadError.textContent = "Не вдалося завантажити каталог. Перевірте з'єднання і "
+            + "оновіть сторінку. Технічні подробиці: " + error.message;
+        loadError.hidden = false;
+    }
+
+    // Запуск: спінер перед запитом, дані, обробка помилки.
     async function init() {
+        if (loader !== null) {
+            loader.hidden = false;      // показуємо спінер ПЕРЕД запитом
+        }
         try {
             products = withIds(await loadData());
             applyFilters();
         } catch (error) {
-            console.error("Не вдалося завантажити каталог:", error);
+            showLoadError(error);
+        } finally {
+            // finally — бо спінер треба сховати і після успіху, і після помилки;
+            // у кінці try він не виконався б при винятку, і спінер крутився б вічно
+            if (loader !== null) {
+                loader.hidden = true;
+            }
         }
     }
 

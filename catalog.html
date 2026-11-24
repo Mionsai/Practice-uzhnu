@@ -76,6 +76,9 @@
                 <div class="spinner" aria-hidden="true"></div>
                 <p>Завантажуємо каталог…</p>
             </div>
+            <!-- LR10: блок помилки завантаження. role="alert" — екранна читалка
+                 озвучить текст одразу. Порожній і прихований; наповнює app.js. -->
+            <p id="load-error" class="load-error" role="alert" hidden></p>
             <!-- §9: контейнер порожній у розмітці — усі картки малює app.js
                  з даних variant09.json. Порожній стан — окремий блок #empty. -->
             <div class="cards"></div>
