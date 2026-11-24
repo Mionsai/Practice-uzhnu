@@ -1384,3 +1384,33 @@ button.card__action {
   margin: 0;
   padding-left: 1.2rem;
 }
+
+/* ===== LR10: обране (сердечко) ===== */
+
+/* кнопка-сердечко у верхньому лівому куті картки (бейдж — у правому) */
+.fav {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 1;
+  border: none;
+  background: rgb(255 255 255 / 75%);
+  color: var(--color-allergen);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.fav--on {
+  background: var(--color-allergen);
+  color: var(--color-on-brand);
+}
+
+.card__allergens--none {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}

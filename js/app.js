@@ -93,6 +93,37 @@ function showToast(message) {
 }
 
 
+// === localStorage: обране (LR10) ===
+
+// Читання захищене двічі: від відсутнього ключа (null) і від зіпсованого
+// вмісту (хтось міг покласти в сховище невалідний рядок).
+function readFavorites() {
+    try {
+        const raw = localStorage.getItem("favorites");
+        if (!raw) {
+            return [];
+        }
+        const list = JSON.parse(raw);
+        return Array.isArray(list) ? list : [];
+    } catch {
+        return [];
+    }
+}
+
+// Масив id кладемо рядком через JSON.stringify — localStorage зберігає лише
+// рядки, інакше туди потрапило б "[object Object]".
+function writeFavorites(ids) {
+    try {
+        localStorage.setItem("favorites", JSON.stringify(ids));
+    } catch {
+        // приватний режим браузера може забороняти запис — не критично
+    }
+}
+
+let favorites = readFavorites();
+const isFavorite = (id) => favorites.includes(id);
+
+
 // === Завантаження даних: fetch + async/await (LR10) ===
 
 // response.ok перевіряємо вручну, бо fetch НЕ кидає помилку на 404/500 —
@@ -156,10 +187,28 @@ if (themeBtn !== null) {
         themeBtn.setAttribute("aria-pressed", String(dark));
     };
 
-    // Стартова тема — із системного налаштування (запам'ятовування — далі в LR10).
-    applyTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    // Спершу дивимось у сховище, і лише якщо там порожньо — у системну схему:
+    // явний вибір користувача важливіший за налаштування ОС, тож він має пріоритет.
+    let saved = null;
+    try {
+        saved = localStorage.getItem("theme");
+    } catch {
+        saved = null;
+    }
+    const startDark = saved !== null
+        ? saved === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(startDark);
 
-    themeBtn.addEventListener("click", () => applyTheme(!isDark()));
+    themeBtn.addEventListener("click", () => {
+        const next = !isDark();
+        applyTheme(next);
+        try {
+            localStorage.setItem("theme", next ? "dark" : "light");
+        } catch {
+            // сховище може бути недоступне — тема все одно перемкнеться
+        }
+    });
 }
 
 
@@ -169,6 +218,7 @@ if (cardsBox !== null) {
     const loader = document.querySelector(".loader");
     const loadError = document.getElementById("load-error");
     const searchInput = document.getElementById("search");
+    const favOnly = document.getElementById("fav-only");
     const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
     const countOut = document.getElementById("catalog-count");
     const emptyBox = document.getElementById("empty");
@@ -200,6 +250,15 @@ if (cardsBox !== null) {
             badge.textContent = "Еко";
             card.append(badge);
         }
+
+        // кнопка-сердечко «обране» (localStorage)
+        const fav = document.createElement("button");
+        fav.type = "button";
+        fav.className = isFavorite(product.id) ? "fav fav--on" : "fav";
+        fav.textContent = isFavorite(product.id) ? "♥" : "♡";
+        fav.setAttribute("aria-pressed", String(isFavorite(product.id)));
+        fav.setAttribute("aria-label", isFavorite(product.id) ? "Прибрати з обраного" : "Додати до обраного");
+        card.append(fav);
 
         const img = document.createElement("img");
         img.className = "card__img";
@@ -274,12 +333,16 @@ if (cardsBox !== null) {
     function applyFilters() {
         const query = (searchInput?.value ?? "").trim().toLowerCase();
         const excluded = allergenBoxes.filter((b) => b.checked).map((b) => b.value);
+        const favFilter = favOnly?.checked ?? false;
         const list = products.filter((p) => {
             const haystack = [p.name, ...p.ingredients].join(" ").toLowerCase();
             if (query !== "" && !haystack.includes(query)) {
                 return false;
             }
             if (excluded.some((a) => p.allergens.includes(a))) {
+                return false;
+            }
+            if (favFilter && !isFavorite(p.id)) {
                 return false;
             }
             return true;
@@ -438,6 +501,19 @@ if (cardsBox !== null) {
         dialog.showModal();
     }
 
+    // Перемикає обране й перемальовує список (оновити сердечка й фільтр «тільки обране»).
+    function toggleFavorite(id) {
+        if (isFavorite(id)) {
+            favorites = favorites.filter((f) => f !== id);
+            showToast("Прибрано з обраного");
+        } else {
+            favorites = [...favorites, id];
+            showToast("Додано до обраного");
+        }
+        writeFavorites(favorites);
+        applyFilters();
+    }
+
     // Делегування: один слухач на контейнері карток.
     cardsBox.addEventListener("click", (event) => {
         const card = event.target.closest(".card");
@@ -445,6 +521,11 @@ if (cardsBox !== null) {
             return;
         }
         const id = Number(card.dataset.id);
+        // сердечко перемикає обране й НЕ відкриває модалку (ранній return)
+        if (event.target.closest(".fav") !== null) {
+            toggleFavorite(id);
+            return;
+        }
         if (event.target.closest(".card__order") !== null) {
             const product = products.find((p) => p.id === id);
             showToast(`«${product.name}» додано в кошик`);
@@ -458,6 +539,7 @@ if (cardsBox !== null) {
     }
 
     searchInput?.addEventListener("input", applyFilters);
+    favOnly?.addEventListener("change", applyFilters);
     allergenBoxes.forEach((box) => box.addEventListener("change", applyFilters));
 
     // id у файлі немає — присвоюємо за позицією.
