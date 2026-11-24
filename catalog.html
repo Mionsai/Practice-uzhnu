@@ -21,6 +21,7 @@
                     <li><a href="index.html#store">Про проєкт</a></li>
                     <li><a href="index.html#alergic">Алергени</a></li>
                     <li><a href="form.html">Підписка</a></li>
+                    <li><a href="stats.html">Статистика</a></li>
                     <li><a href="about.html">Контакти</a></li>
             </ul>
         </nav>
@@ -72,6 +73,8 @@
             <!-- лічильник заповнює app.js після рендера; aria-live озвучує
                  зміну кількості під час пошуку/фільтрації -->
             <p class="catalog-count" id="catalog-count" aria-live="polite"></p>
+            <!-- бонус-кеш: рядок «дані з кешу від …», поки вантажаться свіжі -->
+            <p id="cache-note" class="cache-note" role="status" aria-live="polite" hidden></p>
             <div class="loader" hidden>
                 <div class="spinner" aria-hidden="true"></div>
                 <p>Завантажуємо каталог…</p>
@@ -245,6 +248,21 @@
                         placeholder="напр. кіноа або кунжут" autocomplete="off">
                 </p>
                 <p>
+                    <label for="filter">Категорія:</label>
+                    <!-- опції генерує app.js з даних (fillCategories) -->
+                    <select id="filter" name="filter">
+                        <option value="">усі категорії</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="sort">Сортування:</label>
+                    <select id="sort" name="sort">
+                        <option value="">за замовчуванням</option>
+                        <option value="name">за назвою</option>
+                        <option value="cal">за калорійністю</option>
+                    </select>
+                </p>
+                <p>
                     <label><input type="checkbox" id="fav-only"> Тільки обране ♥</label>
                 </p>
                 <fieldset>
@@ -256,6 +274,9 @@
                     <label><input type="checkbox" name="exclude" value="кунжут"> Кунжут</label>
                     <label><input type="checkbox" name="exclude" value="яйця"> Яйця</label>
                 </fieldset>
+                <p>
+                    <button type="button" id="reset-filters">Скинути фільтри</button>
+                </p>
             </form>
         </aside>
 

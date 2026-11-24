@@ -1325,9 +1325,59 @@ button.card__action {
   margin: 0;
 }
 
-/* ===== LR10: модалка повної деталізації ===== */
+/* ===== LR10: завантаження, обране, модалка-деталізація ===== */
 
-/* ширша за «швидкий перегляд» і скролиться, якщо висока */
+/* повідомлення про помилку завантаження — помітний блок із кольорів палітри
+   (не «сирі» значення). display не задаємо, щоб [hidden] його ховав */
+.load-error {
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  border: 1px solid var(--color-allergen);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-allergen);
+  font-weight: 700;
+}
+
+/* селекти фільтра — такий самий вигляд, як поле пошуку */
+.catalog-tools select {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* кнопка-сердечко «обране» — у верхньому лівому куті картки (бейдж — у правому) */
+.fav {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 1;
+  border: none;
+  background: rgb(255 255 255 / 75%);
+  color: var(--color-allergen);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.fav--on {
+  background: var(--color-allergen);
+  color: var(--color-on-brand);
+}
+
+.card__allergens--none {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* модалка деталізації ширша за «швидкий перегляд» і скролиться, якщо висока */
 #details {
   width: min(92%, 560px);
   max-height: 85vh;
@@ -1359,7 +1409,8 @@ button.card__action {
   margin: 0;
 }
 
-/* таблиці у модалці — лише горизонтальний скрол на вузькому екрані */
+/* таблиці у модалці — лише горизонтальний скрол на вузькому екрані,
+   без мобільного «списку», як у .table-wrap каталогу */
 .detail-table {
   overflow-x: auto;
 }
@@ -1385,32 +1436,31 @@ button.card__action {
   padding-left: 1.2rem;
 }
 
-/* ===== LR10: обране (сердечко) ===== */
+/* ===== LR10 бонуси: кеш, скидання фільтрів, сторінка статистики ===== */
 
-/* кнопка-сердечко у верхньому лівому куті картки (бейдж — у правому) */
-.fav {
-  position: absolute;
-  top: var(--space-sm);
-  left: var(--space-sm);
-  z-index: 1;
-  border: none;
-  background: rgb(255 255 255 / 75%);
-  color: var(--color-allergen);
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-}
-
-.fav--on {
-  background: var(--color-allergen);
-  color: var(--color-on-brand);
-}
-
-.card__allergens--none {
+/* підказка «дані з кешу від …», поки вантажаться свіжі */
+.cache-note {
+  margin: 0 0 var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface);
   color: var(--color-muted);
+  border-radius: var(--radius);
   font-size: 0.9rem;
+}
+
+/* кнопка «Скинути фільтри» */
+#reset-filters {
+  margin-top: var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* сторінка статистики — вузька колонка для читабельності */
+#stats-app {
+  max-width: var(--measure);
 }

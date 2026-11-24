@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Статистика — Чиста полиця</title>
+    <link rel="icon" href="images/favicon.jpg">
+    <script src="js/app.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1 id="top">Чиста полиця</h1>
+        <nav class="nav" aria-label="Головне меню">
+            <button id="burger" class="nav__toggle" type="button" aria-expanded="false" aria-controls="navList">☰ Меню</button>
+            <ul class="nav__list" id="navList">
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="index.html#store">Про проєкт</a></li>
+                    <li><a href="index.html#alergic">Алергени</a></li>
+                    <li><a href="form.html">Підписка</a></li>
+                    <li><a href="stats.html" class="current">Статистика</a></li>
+                    <li><a href="about.html">Контакти</a></li>
+            </ul>
+        </nav>
+        <button id="themeToggle" type="button" aria-pressed="false">Тема</button>
+    </header>
+
+    <main>
+        <section id="stats-app">
+            <h2>Статистика з публічного API</h2>
+            <p>
+                Бонус LR10: дані тягнемо з
+                <a href="https://pokeapi.co" target="_blank" rel="noopener noreferrer">PokeAPI</a>
+                — публічного API без ключа. Для прикладу беремо картку «pikachu»
+                через <code>fetch</code> з тим самим спінером і обробкою помилок,
+                що й каталог.
+            </p>
+
+            <div class="loader" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Завантажуємо статистику…</p>
+            </div>
+            <p id="stats-error" class="load-error" role="alert" hidden></p>
+
+            <dl id="stats-out" class="detail-pairs"></dl>
+        </section>
+    </main>
+
+    <footer>
+        <p>Полажинець Михайло, 2026</p>
+        <address>
+            м. Ужгород, вул. Заньковецька, 24А · <a href="mailto:chystapolytsia@gmail.com">chystapolytsia@gmail.com</a> · <a href="tel:+380501234567">+380 50 123-45-67</a>
+        </address>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+
+</html>

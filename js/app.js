@@ -3,11 +3,12 @@
 // === Дані ===
 // До LR10 масив був зашитий у код; тепер він приїжджає з data.json через fetch
 // (функція loadData). let, а не const, бо значення присвоюється вже після
-// завантаження. Ім'я `products` лишилося тим самим, що в LR8/LR9.
+// завантаження. Ім'я `products` лишилося тим самим, що в LR8/LR9, тож решта
+// коду правок не потребує.
 let products = [];
 
 // data.json змінювати не можна, тож те, чого в ньому немає, прив'язуємо до
-// назви тут: фото товару й ознаку «рекомендований».
+// назви тут: фото товару й ознаку «рекомендований» (бонус-картка з LR6).
 const IMAGES = {
     "Гранола медова": "images/granola.jpg",
     "Йогурт натуральний": "images/yogurt.jpg",
@@ -23,6 +24,7 @@ const IMAGES = {
 const FEATURED_NAME = "Салат кіноа";
 
 // Людські підписи для ключів даних (і простих полів, і вкладених об'єктів).
+// Невідомий ключ показуємо як є.
 const LABELS = {
     name: "Назва", category: "Категорія",
     nutrition: "Харчова цінність (на 100 г)", package: "Паковання",
@@ -32,7 +34,8 @@ const LABELS = {
 };
 const labelOf = (key) => LABELS[key] ?? key;
 
-// Числа — з розділювачами розрядів української локалі; логічні — «так/ні».
+// Форматування значень: числа — з розділювачами розрядів української локалі,
+// логічні — «так/ні», решта — як є.
 function formatValue(value) {
     if (typeof value === "number") {
         return Number.isInteger(value) ? value.toLocaleString("uk-UA") : value.toFixed(1);
@@ -44,7 +47,7 @@ function formatValue(value) {
 }
 
 
-// === Довідкові функції (з LR8/LR9) ===
+// === Довідкові функції (з LR8/LR9, лишилися в ужитку) ===
 
 // Повертає назву відділу каталогу за категорією продукту (switch).
 function categoryOf(product) {
@@ -96,7 +99,8 @@ function showToast(message) {
 // === localStorage: обране (LR10) ===
 
 // Читання захищене двічі: від відсутнього ключа (null) і від зіпсованого
-// вмісту (хтось міг покласти в сховище невалідний рядок).
+// вмісту (хтось міг покласти в сховище невалідний рядок) — тоді JSON.parse
+// кинув би виняток, і сторінка впала б.
 function readFavorites() {
     try {
         const raw = localStorage.getItem("favorites");
@@ -110,8 +114,8 @@ function readFavorites() {
     }
 }
 
-// Масив id кладемо рядком через JSON.stringify — localStorage зберігає лише
-// рядки, інакше туди потрапило б "[object Object]".
+// Масив id кладемо в сховище рядком через JSON.stringify — localStorage
+// зберігає лише рядки, інакше туди потрапило б "[object Object]".
 function writeFavorites(ids) {
     try {
         localStorage.setItem("favorites", JSON.stringify(ids));
@@ -126,9 +130,10 @@ const isFavorite = (id) => favorites.includes(id);
 
 // === Завантаження даних: fetch + async/await (LR10) ===
 
-// response.ok перевіряємо вручну, бо fetch НЕ кидає помилку на 404/500 —
-// він відхиляє проміс лише на мережевому збої. Без перевірки на 404 ми б
-// спробували розібрати сторінку помилки як JSON.
+// Серце роботи. response.ok перевіряємо вручну, бо fetch НЕ кидає помилку на
+// відповідь 404/500 — він відхиляє проміс лише на мережевому збої. Без цієї
+// перевірки на 404 ми б спробували розібрати сторінку помилки як JSON і
+// отримали б незрозумілий виняток уже на етапі .json().
 async function loadData() {
     const response = await fetch("data.json");
     if (!response.ok) {
@@ -140,6 +145,27 @@ async function loadData() {
     }
     return data;
 }
+
+// Бонус — порівняння стилів запису. Та сама логіка на ланцюжку then/catch;
+// НЕ викликається (активна версія — async/await loadData вище). Різниця: тут
+// кожен крок — окремий колбек, і легко забути return проміса з .json() (тоді
+// наступний then отримає undefined); async/await читається як звичайний
+// послідовний код, а статуси й мережу ловить один catch у виклику.
+// function loadDataThen() {
+//     return fetch("data.json")
+//         .then((response) => {
+//             if (!response.ok) {
+//                 throw new Error(`Сервер відповів статусом ${response.status}`);
+//             }
+//             return response.json();          // забути цей return — типова помилка
+//         })
+//         .then((data) => {
+//             if (!Array.isArray(data) || data.length === 0) {
+//                 throw new Error("Файл даних порожній або має неправильну структуру");
+//             }
+//             return data;
+//         });
+// }
 
 
 // === Меню (§7): кнопка-гамбургер замість <details>, керована з JS ===
@@ -174,7 +200,7 @@ if (burger !== null && navList !== null) {
 }
 
 
-// === Тема (§8): перемикач на JS замість inline onclick ===
+// === Тема (§8 + пам'ять LR10) ===
 const themeBtn = document.getElementById("themeToggle");
 if (themeBtn !== null) {
     const root = document.documentElement;          // клас теми живе на <html>
@@ -212,16 +238,25 @@ if (themeBtn !== null) {
 }
 
 
-// === Каталог: рендер із завантажених даних (LR10) ===
+// === Каталог (LR10): завантаження, рендер, фільтри, модалка, обране ===
 const cardsBox = document.querySelector(".cards");
 if (cardsBox !== null) {
     const loader = document.querySelector(".loader");
     const loadError = document.getElementById("load-error");
-    const searchInput = document.getElementById("search");
-    const favOnly = document.getElementById("fav-only");
-    const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
     const countOut = document.getElementById("catalog-count");
     const emptyBox = document.getElementById("empty");
+
+    const searchInput = document.getElementById("search");
+    const categorySelect = document.getElementById("filter");
+    const sortSelect = document.getElementById("sort");
+    const favOnly = document.getElementById("fav-only");
+    const resetBtn = document.getElementById("reset-filters");
+    const cacheNote = document.getElementById("cache-note");
+    const allergenBoxes = [...document.querySelectorAll('input[name="exclude"]')];
+
+    // ключі бонусних завдань у localStorage (окрім favorites/theme)
+    const FILTERS_KEY = "filters";
+    const CACHE_KEY = "catalogCache";
 
     const dialog = document.getElementById("details");
     const dTitle = document.getElementById("d-title");
@@ -231,7 +266,7 @@ if (cardsBox !== null) {
     const dTable = document.getElementById("d-table");
     const dClose = document.getElementById("d-close");
 
-    // Будує один DOM-вузол картки з даних продукту (createElement + textContent).
+    // --- Побудова картки з об'єкта даних (лише createElement + textContent) ---
     function cardNode(product) {
         const featured = product.name === FEATURED_NAME;
 
@@ -239,6 +274,7 @@ if (cardsBox !== null) {
         card.className = featured ? "card card--featured" : "card";
         card.dataset.id = product.id;
 
+        // бейдж: у рекомендованої — «Рекомендуємо», інакше «Еко» для еко-паковання
         if (featured) {
             const badge = document.createElement("span");
             badge.className = "card__badge";
@@ -276,14 +312,16 @@ if (cardsBox !== null) {
 
         const meta = document.createElement("p");
         meta.className = "card__meta";
-        meta.textContent = `${product.category} · ${product.package.weight_g} г · ${product.package.material}`;
+        meta.textContent = `${product.category} · ${formatValue(product.package.weight_g)} г · ${product.package.material}`;
 
         const nutri = document.createElement("p");
         nutri.className = "card__nutri";
-        nutri.textContent = `${product.nutrition.cal} ккал · білок ${product.nutrition.protein_g} г`;
+        nutri.textContent = `${formatValue(product.nutrition.cal)} ккал · білок ${formatValue(product.nutrition.protein_g)} г`;
 
         body.append(title, meta, nutri);
 
+        // алергени — червоними мітками; порожній масив (родзинка варіанта) —
+        // осмислений текст, а не порожнє місце
         const allerg = document.createElement("p");
         allerg.className = "card__allergens";
         if (product.allergens.length > 0) {
@@ -316,7 +354,8 @@ if (cardsBox !== null) {
         return card;
     }
 
-    // Малює добірку. DocumentFragment + replaceChildren — одна вставка в DOM.
+    // Малює добірку. Картки спершу збираються у DocumentFragment і вставляються
+    // одним replaceChildren — один перерахунок верстки замість десяти.
     function renderCards(items) {
         const frag = document.createDocumentFragment();
         items.forEach((p) => frag.append(cardNode(p)));
@@ -329,14 +368,21 @@ if (cardsBox !== null) {
         }
     }
 
-    // Пошук за назвою/складом + виключення алергенів.
+    // Одна точка істини про видимі картки: пошук + категорія + виключення
+    // алергенів + «тільки обране», а потім сортування. Усі елементи керування
+    // поєднуються, а не скидають одне одного.
     function applyFilters() {
         const query = (searchInput?.value ?? "").trim().toLowerCase();
+        const category = categorySelect?.value ?? "";
         const excluded = allergenBoxes.filter((b) => b.checked).map((b) => b.value);
         const favFilter = favOnly?.checked ?? false;
-        const list = products.filter((p) => {
+
+        let list = products.filter((p) => {
             const haystack = [p.name, ...p.ingredients].join(" ").toLowerCase();
             if (query !== "" && !haystack.includes(query)) {
+                return false;
+            }
+            if (category !== "" && p.category !== category) {
                 return false;
             }
             if (excluded.some((a) => p.allergens.includes(a))) {
@@ -347,7 +393,111 @@ if (cardsBox !== null) {
             }
             return true;
         });
+
+        if (sortSelect?.value === "name") {
+            list = sortByName(list);
+        } else if (sortSelect?.value === "cal") {
+            list = sortByCalories(list);
+        }
         renderCards(list);
+        saveFilters();              // бонус: запам'ятати стан елементів керування
+    }
+
+    // Наповнює випадний список категорій значеннями з даних (а не руками в HTML).
+    // Ідемпотентна: щоразу перебудовує опції, лишаючи «усі категорії» першою.
+    function fillCategories() {
+        if (categorySelect === null) {
+            return;
+        }
+        const unique = [...new Set(products.map((p) => p.category))].sort((a, b) => a.localeCompare(b, "uk"));
+        const options = [new Option("усі категорії", "")];
+        unique.forEach((cat) => options.push(new Option(cat, cat)));
+        categorySelect.replaceChildren(...options);
+    }
+
+    // === Бонус: стан фільтрів переживає перезавантаження ===
+
+    // Зберігає пошук, категорію, сортування й «тільки обране» одним об'єктом.
+    function saveFilters() {
+        try {
+            localStorage.setItem(FILTERS_KEY, JSON.stringify({
+                q: searchInput?.value ?? "",
+                category: categorySelect?.value ?? "",
+                sort: sortSelect?.value ?? "",
+                favOnly: favOnly?.checked ?? false,
+            }));
+        } catch {
+            // сховище недоступне — не критично
+        }
+    }
+
+    // Відновлює елементи керування зі сховища. Викликається ПІСЛЯ fillCategories:
+    // поки опцій категорій немає, виставити collect\value було б нікуди.
+    function restoreFilters() {
+        let saved = null;
+        try {
+            const raw = localStorage.getItem(FILTERS_KEY);
+            saved = raw ? JSON.parse(raw) : null;
+        } catch {
+            saved = null;
+        }
+        if (saved === null) {
+            return;
+        }
+        if (searchInput) { searchInput.value = saved.q ?? ""; }
+        if (categorySelect) { categorySelect.value = saved.category ?? ""; }
+        if (sortSelect) { sortSelect.value = saved.sort ?? ""; }
+        if (favOnly) { favOnly.checked = Boolean(saved.favOnly); }
+    }
+
+    // Кнопка «Скинути фільтри»: чистить і сховище, і поля.
+    function resetFilters() {
+        try {
+            localStorage.removeItem(FILTERS_KEY);
+        } catch {
+            // ігноруємо
+        }
+        if (searchInput) { searchInput.value = ""; }
+        if (categorySelect) { categorySelect.value = ""; }
+        if (sortSelect) { sortSelect.value = ""; }
+        if (favOnly) { favOnly.checked = false; }
+        allergenBoxes.forEach((b) => { b.checked = false; });
+        applyFilters();
+    }
+
+    // === Бонус: кеш даних у localStorage ===
+
+    // Повертає {data, ts} з кешу або null (із захистом від зіпсованого вмісту).
+    function readCache() {
+        try {
+            const raw = localStorage.getItem(CACHE_KEY);
+            if (!raw) {
+                return null;
+            }
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed.data) ? parsed : null;
+        } catch {
+            return null;
+        }
+    }
+
+    // Зберігає копію даних із міткою часу.
+    function writeCache(data) {
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+        } catch {
+            // переповнене/недоступне сховище — кеш просто не збережеться
+        }
+    }
+
+    // Показує рядок «дані з кешу від …» (ховається, коли приїхали свіжі).
+    function showCacheNote(ts) {
+        if (cacheNote === null) {
+            return;
+        }
+        const when = new Date(ts).toLocaleString("uk-UA");
+        cacheNote.textContent = `Показано дані з кешу від ${when}. Оновлюємо…`;
+        cacheNote.hidden = false;
     }
 
     // --- Модалка: повна деталізація вкладених структур ---
@@ -366,7 +516,9 @@ if (cardsBox !== null) {
         return dl;
     }
 
-    // Вкладений об'єкт -> секція з таблицею «Показник/Значення», зібраною в коді.
+    // Вкладений об'єкт -> секція із заголовком і таблицею «Показник/Значення»,
+    // зібраною в коді (thead + tbody). Ключі перебираємо через Object.entries,
+    // тож різний набір полів у різних записів обробиться сам.
     function objectSection(key, obj) {
         const section = document.createElement("section");
         const h = document.createElement("h3");
@@ -501,7 +653,7 @@ if (cardsBox !== null) {
         dialog.showModal();
     }
 
-    // Перемикає обране й перемальовує список (оновити сердечка й фільтр «тільки обране»).
+    // --- Обране ---
     function toggleFavorite(id) {
         if (isFavorite(id)) {
             favorites = favorites.filter((f) => f !== id);
@@ -511,10 +663,10 @@ if (cardsBox !== null) {
             showToast("Додано до обраного");
         }
         writeFavorites(favorites);
-        applyFilters();
+        applyFilters();             // перемалювати: оновити сердечка й фільтр «тільки обране»
     }
 
-    // Делегування: один слухач на контейнері карток.
+    // --- Делегування: один слухач на весь контейнер карток ---
     cardsBox.addEventListener("click", (event) => {
         const card = event.target.closest(".card");
         if (card === null) {
@@ -526,6 +678,7 @@ if (cardsBox !== null) {
             toggleFavorite(id);
             return;
         }
+        // «Замовити» кидає тост у кошик
         if (event.target.closest(".card__order") !== null) {
             const product = products.find((p) => p.id === id);
             showToast(`«${product.name}» додано в кошик`);
@@ -538,15 +691,15 @@ if (cardsBox !== null) {
         dClose.addEventListener("click", () => dialog.close());
     }
 
+    // елементи керування — усі через applyFilters
     searchInput?.addEventListener("input", applyFilters);
+    categorySelect?.addEventListener("change", applyFilters);
+    sortSelect?.addEventListener("change", applyFilters);
     favOnly?.addEventListener("change", applyFilters);
     allergenBoxes.forEach((box) => box.addEventListener("change", applyFilters));
+    resetBtn?.addEventListener("click", resetFilters);       // бонус: скинути фільтри
 
-    // id у файлі немає — присвоюємо за позицією.
-    const withIds = (data) => data.map((p, i) => ({ ...p, id: i + 1 }));
-
-    // Показує блок помилки з людським текстом (а не лише console.error) —
-    // користувач консолі не відкриває, для нього порожня сторінка = «зламалось».
+    // Показує блок помилки з людським текстом (а не лише console.error).
     function showLoadError(error) {
         if (loadError === null) {
             return;
@@ -556,16 +709,39 @@ if (cardsBox !== null) {
         loadError.hidden = false;
     }
 
-    // Запуск: спінер перед запитом, дані, обробка помилки.
+    // id у файлі немає — присвоюємо за позицією, щоб картка й модалка могли
+    // знаходити свій запис
+    const withIds = (data) => data.map((p, i) => ({ ...p, id: i + 1 }));
+
+    // --- Запуск: кеш -> миттєвий показ, потім свіжі дані з мережі ---
     async function init() {
-        if (loader !== null) {
-            loader.hidden = false;      // показуємо спінер ПЕРЕД запитом
+        // Бонус-кеш: якщо є збережена копія — показуємо її одразу, без спінера,
+        // а свіжі дані підвантажуємо у фоні.
+        const cached = readCache();
+        if (cached !== null) {
+            products = withIds(cached.data);
+            fillCategories();
+            restoreFilters();
+            applyFilters();
+            showCacheNote(cached.ts);
+        } else if (loader !== null) {
+            loader.hidden = false;      // першого разу кешу немає — показуємо спінер
         }
+
         try {
             products = withIds(await loadData());
-            applyFilters();
+            writeCache(products.map(({ id, ...rest }) => rest)); // кешуємо без службового id
+            fillCategories();
+            restoreFilters();           // відновлюємо стан ПІСЛЯ завантаження даних
+            applyFilters();             // і лише тоді фільтруємо — масив уже повний
+            if (cacheNote !== null) {
+                cacheNote.hidden = true; // свіжі дані приїхали — підказку про кеш ховаємо
+            }
         } catch (error) {
-            showLoadError(error);
+            // якщо кеш уже показано — лишаємо його; інакше показуємо помилку
+            if (cached === null) {
+                showLoadError(error);
+            }
         } finally {
             // finally — бо спінер треба сховати і після успіху, і після помилки;
             // у кінці try він не виконався б при винятку, і спінер крутився б вічно
@@ -576,6 +752,58 @@ if (cardsBox !== null) {
     }
 
     init();
+}
+
+
+// === Бонус: окрема сторінка статистики з реальним API (LR10) ===
+// Той самий патерн, що й каталог: fetch + async/await, спінер, обробка помилок.
+const statsApp = document.getElementById("stats-app");
+if (statsApp !== null) {
+    const out = document.getElementById("stats-out");
+    const statsLoader = statsApp.querySelector(".loader");
+    const statsError = document.getElementById("stats-error");
+    const API_URL = "https://pokeapi.co/api/v2/pokemon/pikachu";
+
+    async function loadStats() {
+        if (statsLoader !== null) {
+            statsLoader.hidden = false;
+        }
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error(`Сервер відповів статусом ${response.status}`);
+            }
+            const data = await response.json();
+            const rows = [
+                ["Назва", data.name],
+                ["Номер у покедексі", data.id],
+                ["Зріст", (data.height / 10).toFixed(1) + " м"],
+                ["Вага", (data.weight / 10).toFixed(1) + " кг"],
+                ["Базовий досвід", data.base_experience],
+                ["Типи", data.types.map((t) => t.type.name).join(", ")],
+            ];
+            const frag = document.createDocumentFragment();
+            rows.forEach(([key, value]) => {
+                const dt = document.createElement("dt");
+                dt.textContent = key;
+                const dd = document.createElement("dd");
+                dd.textContent = String(value);
+                frag.append(dt, dd);
+            });
+            out.replaceChildren(frag);
+        } catch (error) {
+            if (statsError !== null) {
+                statsError.textContent = "Не вдалося завантажити статистику: " + error.message;
+                statsError.hidden = false;
+            }
+        } finally {
+            if (statsLoader !== null) {
+                statsLoader.hidden = true;
+            }
+        }
+    }
+
+    loadStats();
 }
 
 
@@ -601,6 +829,7 @@ if (subscribeForm !== null) {
 
     const today = new Date().toISOString().slice(0, 10);
 
+    // Власні перевірки поверх HTML-атрибутів через setCustomValidity.
     function runCustomChecks() {
         const nameField = subscribeForm.elements.fullname;
         nameField.setCustomValidity(
@@ -653,6 +882,7 @@ if (subscribeForm !== null) {
         }
     });
 
+    // Квитанція будується вузлами через createElement — не текстовим рядком.
     function buildReceipt() {
         const el = subscribeForm.elements;
         const persons = Number(el.persons.value);                       // Number()
