@@ -22,6 +22,27 @@ const IMAGES = {
 };
 const FEATURED_NAME = "Салат кіноа";
 
+// Людські підписи для ключів даних (і простих полів, і вкладених об'єктів).
+const LABELS = {
+    name: "Назва", category: "Категорія",
+    nutrition: "Харчова цінність (на 100 г)", package: "Паковання",
+    ingredients: "Склад", allergens: "Алергени",
+    cal: "Калорійність, ккал", fat_g: "Жири, г", carbs_g: "Вуглеводи, г",
+    protein_g: "Білки, г", weight_g: "Вага, г", material: "Матеріал", eco: "Еко-паковання",
+};
+const labelOf = (key) => LABELS[key] ?? key;
+
+// Числа — з розділювачами розрядів української локалі; логічні — «так/ні».
+function formatValue(value) {
+    if (typeof value === "number") {
+        return Number.isInteger(value) ? value.toLocaleString("uk-UA") : value.toFixed(1);
+    }
+    if (typeof value === "boolean") {
+        return value ? "так" : "ні";
+    }
+    return String(value);
+}
+
 
 // === Довідкові функції (з LR8/LR9) ===
 
@@ -153,9 +174,12 @@ if (cardsBox !== null) {
     const emptyBox = document.getElementById("empty");
 
     const dialog = document.getElementById("details");
-    const dialogTitle = document.getElementById("details-title");
-    const dialogBody = document.getElementById("details-body");
-    const closeBtn = document.getElementById("closeDetails");
+    const dTitle = document.getElementById("d-title");
+    const dMain = document.getElementById("d-main");
+    const dObject = document.getElementById("d-object");
+    const dList = document.getElementById("d-list");
+    const dTable = document.getElementById("d-table");
+    const dClose = document.getElementById("d-close");
 
     // Будує один DOM-вузол картки з даних продукту (createElement + textContent).
     function cardNode(product) {
@@ -263,22 +287,154 @@ if (cardsBox !== null) {
         renderCards(list);
     }
 
-    // Відкриває діалог «швидкого перегляду» з даних продукту.
+    // --- Модалка: повна деталізація вкладених структур ---
+
+    // <dl> з пар «підпис — значення» для простих полів.
+    function pairsList(entries) {
+        const dl = document.createElement("dl");
+        dl.className = "detail-pairs";
+        entries.forEach(([key, value]) => {
+            const dt = document.createElement("dt");
+            dt.textContent = labelOf(key);
+            const dd = document.createElement("dd");
+            dd.textContent = formatValue(value);
+            dl.append(dt, dd);
+        });
+        return dl;
+    }
+
+    // Вкладений об'єкт -> секція з таблицею «Показник/Значення», зібраною в коді.
+    function objectSection(key, obj) {
+        const section = document.createElement("section");
+        const h = document.createElement("h3");
+        h.textContent = labelOf(key);
+        section.append(h);
+
+        const wrap = document.createElement("div");
+        wrap.className = "detail-table";               // overflow-x: auto проти скролу на 360px
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const htr = document.createElement("tr");
+        ["Показник", "Значення"].forEach((t) => {
+            const th = document.createElement("th");
+            th.scope = "col";
+            th.textContent = t;
+            htr.append(th);
+        });
+        thead.append(htr);
+        const tbody = document.createElement("tbody");
+        Object.entries(obj).forEach(([k, v]) => {
+            const tr = document.createElement("tr");
+            const th = document.createElement("th");
+            th.scope = "row";
+            th.textContent = labelOf(k);
+            const td = document.createElement("td");
+            td.textContent = formatValue(v);
+            tr.append(th, td);
+            tbody.append(tr);
+        });
+        table.append(thead, tbody);
+        wrap.append(table);
+        section.append(wrap);
+        return section;
+    }
+
+    // Масив рядків -> секція зі списком <ul>; порожній масив -> осмислений текст.
+    function listSection(key, arr) {
+        const section = document.createElement("section");
+        const h = document.createElement("h3");
+        h.textContent = labelOf(key);
+        section.append(h);
+        if (arr.length === 0) {
+            const p = document.createElement("p");
+            p.textContent = key === "allergens" ? "без поширених алергенів" : "список порожній";
+            section.append(p);
+        } else {
+            const ul = document.createElement("ul");
+            arr.forEach((item) => {
+                const li = document.createElement("li");
+                li.textContent = String(item);
+                ul.append(li);
+            });
+            section.append(ul);
+        }
+        return section;
+    }
+
+    // Масив об'єктів -> таблиця (стовпці за ключами першого елемента).
+    // У варіанті 9 таких полів немає, але шлях побудовано на випадок інших даних.
+    function tableSection(key, arr) {
+        const section = document.createElement("section");
+        const h = document.createElement("h3");
+        h.textContent = labelOf(key);
+        section.append(h);
+        const wrap = document.createElement("div");
+        wrap.className = "detail-table";
+        const table = document.createElement("table");
+        const cols = Object.keys(arr[0]);
+        const thead = document.createElement("thead");
+        const htr = document.createElement("tr");
+        cols.forEach((c) => {
+            const th = document.createElement("th");
+            th.scope = "col";
+            th.textContent = labelOf(c);
+            htr.append(th);
+        });
+        thead.append(htr);
+        const tbody = document.createElement("tbody");
+        arr.forEach((row) => {
+            const tr = document.createElement("tr");
+            cols.forEach((c) => {
+                const td = document.createElement("td");
+                td.textContent = formatValue(row[c]);
+                tr.append(td);
+            });
+            tbody.append(tr);
+        });
+        table.append(thead, tbody);
+        wrap.append(table);
+        section.append(wrap);
+        return section;
+    }
+
+    const isPlainObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+
+    // Заповнює модалку з запису. Кожен контейнер чиститься через replaceChildren
+    // на початку — інакше дані попередньої картки лишилися б і змішалися.
     function openDetails(id) {
         const product = products.find((p) => p.id === id);
         if (product === undefined || dialog === null) {
             return;
         }
-        dialogTitle.textContent = product.name;
-        dialogBody.textContent = [
-            `Відділ: ${product.category} (${categoryOf(product)}).`,
-            `Склад: ${product.ingredients.join(", ")}.`,
-            `Харчова цінність на 100 г: ${product.nutrition.cal} ккал, білки ${product.nutrition.protein_g} г, жири ${product.nutrition.fat_g} г, вуглеводи ${product.nutrition.carbs_g} г.`,
-            `Паковання: ${product.package.weight_g} г, ${product.package.material}${product.package.eco ? " (еко)" : ""}.`,
-            product.allergens.length > 0
-                ? `Алергени: ${product.allergens.join(", ")}.`
-                : "Без поширених алергенів.",
-        ].join("\n");
+        dTitle.textContent = product.name;
+
+        const primitives = [];      // прості поля
+        const objects = [];         // вкладені об'єкти
+        const lists = [];           // масиви рядків
+        const tables = [];          // масиви об'єктів
+
+        Object.entries(product).forEach(([key, value]) => {
+            if (key === "id") {
+                return;             // службове поле — у деталізацію не виводимо
+            }
+            if (Array.isArray(value)) {
+                if (value.length > 0 && isPlainObject(value[0])) {
+                    tables.push([key, value]);
+                } else {
+                    lists.push([key, value]);
+                }
+            } else if (isPlainObject(value)) {
+                objects.push([key, value]);
+            } else {
+                primitives.push([key, value]);
+            }
+        });
+
+        dMain.replaceChildren(pairsList(primitives));
+        dObject.replaceChildren(...objects.map(([k, v]) => objectSection(k, v)));
+        dList.replaceChildren(...lists.map(([k, v]) => listSection(k, v)));
+        dTable.replaceChildren(...tables.map(([k, v]) => tableSection(k, v)));
+
         dialog.showModal();
     }
 
@@ -297,8 +453,8 @@ if (cardsBox !== null) {
         openDetails(id);
     });
 
-    if (closeBtn !== null) {
-        closeBtn.addEventListener("click", () => dialog.close());
+    if (dClose !== null) {
+        dClose.addEventListener("click", () => dialog.close());
     }
 
     searchInput?.addEventListener("input", applyFilters);

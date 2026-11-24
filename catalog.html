@@ -264,13 +264,17 @@
         </footer>
     </div>
 
-    <!-- Порожній діалог «швидкого перегляду»: заголовок і тіло заповнює
-         app.js з даних продукту, по якому клікнули (делегування в .cards).
-         #details-body має white-space: pre-line, тож переноси \n зберігаються. -->
+    <!-- Модалка повної деталізації (LR10). app.js чистить і заповнює секції
+         через replaceChildren + createElement: прості поля (пари «підпис —
+         значення»), вкладені об'єкти (таблиці), масиви рядків (списки) і,
+         за потреби, масиви об'єктів. Без innerHTML. -->
     <dialog id="details">
-        <h2 id="details-title">Деталі товару</h2>
-        <p id="details-body"></p>
-        <button id="closeDetails" type="button">Закрити</button>
+        <h2 id="d-title">Деталі товару</h2>
+        <div id="d-main"></div>
+        <div id="d-object"></div>
+        <div id="d-list"></div>
+        <div id="d-table"></div>
+        <button id="d-close" type="button">Закрити</button>
     </dialog>
 
     <!-- §9: спливне повідомлення. role="status" + aria-live озвучує текст;

@@ -1324,3 +1324,63 @@ button.card__action {
 .receipt dd {
   margin: 0;
 }
+
+/* ===== LR10: модалка повної деталізації ===== */
+
+/* ширша за «швидкий перегляд» і скролиться, якщо висока */
+#details {
+  width: min(92%, 560px);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+#details section {
+  margin-top: var(--space-md);
+}
+
+#details h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: 1.1rem;
+}
+
+/* пари «підпис — значення» простих полів */
+.detail-pairs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-xs) var(--space-md);
+}
+
+.detail-pairs dt {
+  font-weight: 700;
+}
+
+.detail-pairs dd {
+  margin: 0;
+}
+
+/* таблиці у модалці — лише горизонтальний скрол на вузькому екрані */
+.detail-table {
+  overflow-x: auto;
+}
+
+.detail-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detail-table th,
+.detail-table td {
+  border: 1px solid var(--color-muted);
+  padding: var(--space-xs) var(--space-sm);
+  text-align: left;
+}
+
+.detail-table thead th {
+  background: var(--color-surface);
+}
+
+#details ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
